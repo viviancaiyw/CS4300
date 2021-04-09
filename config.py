@@ -1,9 +1,11 @@
 import os
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Different environments for the app to run in
 
 class Config(object):
+  FLASK_APP = 'app.py'
   DEBUG = False
   CSRF_ENABLED = True
   CSRF_SESSION_KEY = "secret"

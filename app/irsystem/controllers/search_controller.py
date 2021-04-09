@@ -1,11 +1,13 @@
 from . import *  
 from app.irsystem.models.helpers import *
 from app.irsystem.models.helpers import NumpyEncoder as NumpyEncoder
+from flask_login import login_required
 
 project_name = "Steamy Reviews: Game Recommendation Engine"
 net_id = "Chang Wei: cw887, Qichen Hu: qh75, Yuwen Cai: yc687, Yitian Lin: yl698"
 
-@irsystem.route('/', methods=['GET'])
+@irsystem.route('/search', methods=['GET', 'POST'])
+@login_required
 def search():
 	query = request.args.get('search')
 	if not query:
