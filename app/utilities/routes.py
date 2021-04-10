@@ -48,3 +48,12 @@ def register():
         flash('Thanks for your register! {}!'.format(user.username))
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
+# HTTP error handling
+@app.errorhandler(404)
+def not_found(error):
+  return render_template("404.html"), 404
+
+@app.shell_context_processor
+def make_shell_context():
+  return {'db':db, 'User':User}
