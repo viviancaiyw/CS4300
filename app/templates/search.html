@@ -2,20 +2,42 @@
 {% block content %}
     <form class="form-inline global-search">
         <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
-            C
-            <span style="color: #EA4335; ">S</span>
-            <span style="color: #FBBC05; ">4</span>
-            3
-            <span style="color: #34A853; ">0</span>
-            <span style="color: #EA4335; ">0</span>
+            N
+            <span style="color: #EA4335; ">e</span>
+            <span style="color: #FBBC05; ">x</span>
+            t
+            <span style="color: #34A853; ">G</span>
+            <span style="color: #EA4335; ">a</span>
+            <span style="color: #EA4335; ">m</span>
+            <span style="color: #EA4335; ">e</span>
         </h1>
 
         <br><br>
-
         <div class="form-group">
-            <input id="input" type="text" name="search" class="form-control" placeholder="Your Input">
+            <label for="num-player">Number of Players:</label>
+            <select name="num-player" id="num-player">
+              <option value="single">Single Player</option>
+              <option value="multiple">Multiple Players</option>
+            </select>
         </div>
-        <button type="submit" class="btn btn-info"> Go! </button>
+        <div class="form-group">
+            <label for="genre">Genre:</label>
+            <select name="genre" id="genre">
+              <option value="adventure">Adventure</option>
+              <option value="strategy">Strategy</option>
+              <option value="sports">Sports</option>
+              <option value="puzzle">Puzzle</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="fav-movie">A Favorite Movie:</label>
+            <input id="fav-movie" type="text" name="search" class="form-control" placeholder="Your Favorite Movie's Name">
+        </div>
+        <div class="form-group">
+            <label for="keywords">Keywords:</label>
+            <input id="Keywords" type="text" name="search" class="form-control" placeholder="Tags">
+        </div>
+<!--        <button type="submit" class="btn btn-info"> Go! </button>-->
     </form>
     <form class="form-inline global-search">
     {% if data %}
@@ -26,5 +48,4 @@
         {% endfor %}
     {% endif %}
     </form>
-
 {% endblock %}
