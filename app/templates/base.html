@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="../static/main.css">
     <title>NextGame</title>
 </head>
-<body>
+<body style='background-image: url("../static/images/background4.jpeg"); background-size: cover;'>
 
     <div id="top-panel">
         <div id="group-members">Group Members: Chang Wei: cw887, Qichen Hu: qh75, Grace Zhao(rz92), Yuwen Cai: yc687, Yitian Lin: yl698</div>
@@ -17,8 +17,8 @@
             {% else %}
             <a href="{{ url_for('logout') }}">Logout</a> |
             {% endif %}
-            <a href={{ url_for('index') }}>Home</a> |
-            <a href={{ url_for('irsystem.search') }}>Search</a> |
+            <a href="{{ url_for('index') }}">Home</a> |
+            <a href="{{ url_for('irsystem.search') }}">Search</a> |
             <a href="/videos">Videos</a> |
             <a href="/acknowledgement">Acknowledgement</a>
         </div>
