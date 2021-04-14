@@ -218,15 +218,17 @@ def extract_keywords(reviews):
 	return keywords
 
 def extract_common_keywords_and_phrases(all_keywords, all_keyphrases):
-	keyphrase_count_threshold = 3
+	keyphrase_count_threshold = 5
 	keyword_count_threshold = 3
 
 	# keyphrases
+	print("Extract common keyphrases")
 	keyphrases_count = Counter(all_keyphrases)
-	keyphrases_count = {x: count for x,count in keyphrases_count.items() if count>=keyphrase_count_threshold}
-	keyphrases = keyphrases_count.keys()
+	keyphrases_dict = {x: count for x,count in keyphrases_count.items() if count>=keyphrase_count_threshold}
+	keyphrases = keyphrases_dict.keys()
 
 	# keywords
+	print("Extract common keywords with tfidf")
 	keywords = set()
 	tfidf_vec = TfidfVectorizer(smooth_idf=True,max_df=0.9,use_idf=True, sublinear_tf=True)
 	tfidf = tfidf_vec.fit_transform(all_keywords)
@@ -239,9 +241,12 @@ def extract_common_keywords_and_phrases(all_keywords, all_keyphrases):
 	tfidf_df = tfidf_df[tfidf_df['tfidf']!=0]
 	tfidf_df = tfidf_df.sort_values(by=['tfidf'], ascending=False)
 
+	tfidf_dict = dict(zip(tfidf_df.word, tfidf_df.tfidf))
+
 	keywords.update(list(tfidf_df['word']))
 
 
+	print("Extract common keywords with count")
 	count_vec = CountVectorizer(binary=True)
 	count = count_vec.fit_transform(all_keywords)
 	count = np.squeeze(np.array(np.sum(count.T, axis=1)))
@@ -254,7 +259,9 @@ def extract_common_keywords_and_phrases(all_keywords, all_keyphrases):
 			return False
 
 	def filter_fn(row):
-		if is_noun(row['word']) or row['count'] > keyword_count_threshold:
+		if is_noun(row['word']) and row['count'] > keyword_count_threshold:
+			return True
+		elif row['count'] > keyword_count_threshold*2:
 			return True
 		else:
 			return False
@@ -267,9 +274,12 @@ def extract_common_keywords_and_phrases(all_keywords, all_keyphrases):
 	m = count_df.apply(filter_fn, axis=1)
 	count_df = count_df[m]
 	count_df = count_df.sort_values(by=['count'], ascending=False)
+
+	count_dict = dict(zip(count_df['word'], count_df['count']))
+
 	keywords.update(list(count_df['word']))
 
-	return list(keyphrases), list(keywords)
+	return list(keyphrases), list(keywords), keyphrases_dict, tfidf_dict, count_dict
 
 
 

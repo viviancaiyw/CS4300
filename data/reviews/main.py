@@ -51,39 +51,53 @@ def write_info(info, app_id):
 	with open(output_path, 'w') as f:
 		f.write(json.dumps(info)+'\n')
 
-def write_total(keyphrases, keywords):
+def write_total(keyphrases, keywords, keyphrases_dict, tfidf_dict, count_dict):
 	total = {'keyphrases':keyphrases, 'keywords':keywords}
-	print(total, flush=True)
-	output_path = 'keyphrases.json'
+
+	output_path = 'keyphrases_and_keywords.json'
 	with open(output_path, 'w') as f:
 		f.write(json.dumps(total, indent=4)+'\n')
+
+	output_path = 'keyphrases_dict.json'
+	with open(output_path, 'w') as f:
+		f.write(json.dumps(keyphrases_dict, indent=4)+'\n')
+
+	output_path = 'keywords_tfidf_dict.json'
+	with open(output_path, 'w') as f:
+		f.write(json.dumps(tfidf_dict, indent=4)+'\n')	
+
+	output_path = 'keywords_count_dict.json'
+	with open(output_path, 'w') as f:
+		f.write(json.dumps(count_dict, indent=4)+'\n')	
 
 def extract_common():
 	all_keywords = list()
 	all_keyphrases = list()
+	count = 0
 	for filename in os.listdir(info_path):
 		if filename.endswith('.json'):
 			with open(info_path+filename, 'r', encoding='utf8') as in_json_file:
+				print("Process file", filename)
 				info = json.load(in_json_file)
 				all_keywords.append(" ".join(info['keywords']))
 				all_keyphrases.extend(info['keyphrases'])
-	keyphrases, keywords = extract_common_keywords_and_phrases(all_keywords, all_keyphrases)
-	return keyphrases, keywords
+
+	keyphrases, keywords, keyphrases_dict, tfidf_dict, count_dict = extract_common_keywords_and_phrases(all_keywords, all_keyphrases)
+	return keyphrases, keywords, keyphrases_dict, tfidf_dict, count_dict
 
 
 if __name__ == "__main__":
-	# app_ids = ["292030", "70", "240", "420", "620", "2870", "4000"]
-	for app_id in app_ids:
-		app_id = str(app_id)
-		output_path = info_path+'info_'+str(app_id)+'.json'
-		if os.path.isfile(output_path):
-			print(app_id," exists")
-			continue
+	# for app_id in app_ids:
+	# 	app_id = str(app_id)
+	# 	output_path = info_path+'info_'+str(app_id)+'.json'
+	# 	if os.path.isfile(output_path):
+	# 		print(app_id," exists")
+	# 		continue
 
-		keyphrases, keywords = extract_single_game(app_id)
-		info = {'app_id':app_id, 'keyphrases':keyphrases, 'keywords': keywords}
+	# 	keyphrases, keywords = extract_single_game(app_id)
+	# 	info = {'app_id':app_id, 'keyphrases':keyphrases, 'keywords': keywords}
 
-		write_info(info, app_id)
+	# 	write_info(info, app_id)
 
-	# keyphrases, keywords = extract_common()
-	# write_total(keyphrases, keywords)
+	keyphrases, keywords, keyphrases_dict, tfidf_dict, count_dict = extract_common()
+	write_total(keyphrases, keywords, keyphrases_dict, tfidf_dict, count_dict)
