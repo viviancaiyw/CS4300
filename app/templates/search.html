@@ -1,45 +1,89 @@
 {% extends "base.html" %}
 {% block content %}
-    <form class="form-inline global-search">
-        <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
-            N
-            <span style="color: #EA4335; ">e</span>
-            <span style="color: #FBBC05; ">x</span>
-            t
-            <span style="color: #34A853; ">G</span>
-            <span style="color: #EA4335; ">a</span>
-            <span style="color: #EA4335; ">m</span>
-            <span style="color: #EA4335; ">e</span>
-        </h1>
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-10">
+            <div class="placeholder"></div>
+            <div class="placeholder"></div>
+            <h1 class="display-2 text-white search-title">NEXTGAME</h1>
+            <p class="text-white-50 lead">&nbsp;Find your next favorite game via books/movies/games you enjoy. Apply
+                tags to further adjust to your quirks</p>
+            <div class="placeholder"></div>
+            <div class="card search-card">
+                <div class="card-body">
+                    <div class="row justify-content-md-center">
+                        <div class="col-11">
+                            <form>
+                                <div class="row search-card-row">
+                                    <div class="col-auto">
+                                        <span><strong>PLAYERS: </strong></span>
+                                    </div>
 
-        <br><br>
-        <div class="form-group">
-            <label for="num-player">Number of Players:</label>
-            <select name="num-player" id="num-player">
-              <option value="single">Single Player</option>
-              <option value="multiple">Multiple Players</option>
-            </select>
+                                    <div class="col-2">
+                                        <input class="form-check-input" type="radio" name="playerType"
+                                            id="playerTypeSingle">
+                                        <label class="form-check-label" for="playerTypeSingle">
+                                            <i class="bi bi-person-fill text-primary"></i> single-player
+                                        </label>
+                                    </div>
+                                    <div class="col-2">
+                                        <input class="form-check-input" type="radio" name="playerType"
+                                            id="playerTypeMulti">
+                                        <label class="form-check-label" for="playerTypeMulti">
+                                            <i class="bi bi-people-fill text-primary"></i> multi-player
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="row search-card-row">
+                                    <div class="col-auto">
+                                        <span><i class="bi bi-ui-checks"></i> <strong>GENRE: </strong></span>
+                                    </div>
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" id="gameGenre">
+                                    </div>
+                                </div>
+
+                                <div class="row search-card-row">
+                                    <div class="col-auto">
+                                        <strong>PIECES YOU ENJOY: </strong></span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label for="booksEnjoy" class="form-label"><i class="bi bi-book text-primary"></i> Books</label>
+                                        <input type="text" class="form-control" id="booksEnjoy">
+                                    </div>
+                                    <div class="col-auto">
+                                        <label for="moviesEnjoy" class="form-label"><i class="bi bi-tv text-primary"></i> Movies</label>
+                                        <input type="text" class="form-control" id="moviesEnjoy">
+                                    </div>
+                                    <div class="col-auto">
+                                        <label for="gamesEnjoy" class="form-label"><i class="bi bi-suit-spade text-primary"></i> Games</label>
+                                        <input type="text" class="form-control" id="gamesEnjoy">
+                                    </div>
+                                </div>
+
+                                <div class="row search-card-row">
+                                    <div class="col-auto">
+                                        <strong><i class="bi bi-tags-fill"></i> TAGS: </strong></span>
+                                    </div>
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" id="gameTags">
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Submit</button>
+
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="genre">Genre:</label>
-            <select name="genre" id="genre">
-              <option value="adventure">Adventure</option>
-              <option value="strategy">Strategy</option>
-              <option value="sports">Sports</option>
-              <option value="puzzle">Puzzle</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="fav-movie">A Favorite Movie:</label>
-            <input id="fav-movie" type="text" name="search" class="form-control" placeholder="Your Favorite Movie's Name">
-        </div>
-        <div class="form-group">
-            <label for="keywords">Keywords:</label>
-            <input id="Keywords" type="text" name="search" class="form-control" placeholder="Tags">
-        </div>
-<!--        <button type="submit" class="btn btn-info"> Go! </button>-->
-    </form>
-    <form class="form-inline global-search">
+    </div>
+</div>
+
+<!-- <form class="form-inline global-search">
     {% if data %}
         <h1>{{output_message}}</h1>
         {% for d in data %}
@@ -47,5 +91,5 @@
             <p>{{d}}</p>
         {% endfor %}
     {% endif %}
-    </form>
+    </form> -->
 {% endblock %}
