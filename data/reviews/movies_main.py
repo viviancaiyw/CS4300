@@ -93,20 +93,46 @@ if __name__ == "__main__":
 	# with open(output_path, 'w') as f:
 	# 	f.write(json.dumps(link_to_reviews, indent=4)+'\n')
 
-	with open('movie_link_to_reviews.json', 'r', encoding='utf8') as in_json_file:
-			link_to_reviews = json.load(in_json_file)
+	# with open('movie_link_to_reviews.json', 'r', encoding='utf8') as in_json_file:
+	# 		link_to_reviews = json.load(in_json_file)
 
-	links = link_to_reviews.keys()
-	for link in links:
-		output_path = movie_info_path+'info_'+link+'.json'
-		if os.path.isfile(output_path):
-			print(link, 'exists')
-			continue
+	# links = link_to_reviews.keys()
+	# for link in links:
+	# 	output_path = movie_info_path+'info_'+link+'.json'
+	# 	if os.path.isfile(output_path):
+	# 		print(link, 'exists')
+	# 		continue
 
-		keyphrases, keywords = extract_single_movie(link, link_to_reviews[link])
-		info = {'link':link, 'keyphrases':keyphrases, 'keywords':keywords}
+	# 	keyphrases, keywords = extract_single_movie(link, link_to_reviews[link])
+	# 	info = {'link':link, 'keyphrases':keyphrases, 'keywords':keywords}
 
-		write_info(info, link)
+	# 	write_info(info, link)
 
-	keyphrases, keywords, keyphrases_dict, tfidf_dict, count_dict = extract_common()
-	write_total(keyphrases, keywords, keyphrases_dict, tfidf_dict, count_dict)
+	# keyphrases, keywords, keyphrases_dict, tfidf_dict, count_dict = extract_common()
+	# write_total(keyphrases, keywords, keyphrases_dict, tfidf_dict, count_dict)
+
+	inverse_idx = dict()
+
+	for filename in os.listdir(movie_info_path):
+		if filename.endswith('.json'):
+			with open(movie_info_path+filename, 'r', encoding='utf8') as in_json_file:
+				print("Process file", filename)
+				info = json.load(in_json_file)
+				link = info['link']
+
+				print("Keywords")
+				for keyword in info['keywords']:
+					lst = inverse_idx.get(keyword, list())
+					lst.append(link)
+					inverse_idx[keyword] = lst
+
+				print("Keyphrases")
+				for keyphrase in info['keyphrases']:
+					lst = inverse_idx.get(keyphrase, list())
+					lst.append(link)
+					inverse_idx[keyphrase] = lst
+
+
+	output_path = 'movies_inverse_keyword_phrases.json'
+	with open(output_path, 'w') as f:
+		f.write(json.dumps(inverse_idx, indent=4)+'\n')

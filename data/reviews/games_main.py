@@ -101,5 +101,31 @@ if __name__ == "__main__":
 
 	# 	write_info(info, app_id)
 
-	keyphrases, keywords, keyphrases_dict, tfidf_dict, count_dict = extract_common()
-	write_total(keyphrases, keywords, keyphrases_dict, tfidf_dict, count_dict)
+	# keyphrases, keywords, keyphrases_dict, tfidf_dict, count_dict = extract_common()
+	# write_total(keyphrases, keywords, keyphrases_dict, tfidf_dict, count_dict)
+
+	inverse_idx = dict()
+
+	for filename in os.listdir(info_path):
+		if filename.endswith('.json'):
+			with open(info_path+filename, 'r', encoding='utf8') as in_json_file:
+				print("Process file", filename)
+				info = json.load(in_json_file)
+				app_id = info['app_id']
+
+				print("Keywords")
+				for keyword in info['keywords']:
+					lst = inverse_idx.get(keyword, list())
+					lst.append(app_id)
+					inverse_idx[keyword] = lst
+
+				print("Keyphrases")
+				for keyphrase in info['keyphrases']:
+					lst = inverse_idx.get(keyphrase, list())
+					lst.append(app_id)
+					inverse_idx[keyphrase] = lst
+
+
+	output_path = 'inverse_keyword_phrases.json'
+	with open(output_path, 'w') as f:
+		f.write(json.dumps(inverse_idx, indent=4)+'\n')
