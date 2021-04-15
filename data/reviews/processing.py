@@ -10,35 +10,54 @@ from rake_nltk import Rake
 import yake
 from collections import Counter
 
+# Game keywords
+# stop_words = stopwords.words('english')
+# stop_words.extend(STOPWORDS)
+# stop_words.extend(['player', 'play', 'people', 'game', 'steam','review',
+# 				  'day', 'year', 'hour', 'minute','time','moment','like',
+# 				  'world', 'yes', 'lol', 'lmao', 'cool', 'love', 'get',
+# 				  'good', 'great', 'nice', 'best', 'fun', 'awesome',
+# 				   'ever', 'kinda', 'shit', 'yeah', 'new', 'old',
+# 				  'big','small','high','low','many','much','lot','alot',
+# 				  'others','thank','http','thing','everyone','anyone','anything',
+# 				  'everything','cant','dont','guy','hello','plenty','entire',
+# 				  'youtube','something','someone','pro','con','guys',
+# 				  'haha', 'hehe','end','nothing','no','one',
+# 				  'fine','first','last','epic','english','bit',
+# 				  'terrible','overall','original','life','bad',
+# 				  'today','fps','gameplay','favorite','com','favourite'
+# 				  'man','word','version','pure','experience','www',
+# 				  'please','thanks','little','least','way','different',
+# 				  'style','man','men','super','problem','item','work','computer',
+# 				  'stuff','wait','early','access','sure','able','developer','wow','genre',
+# 				  'ive','rich','feel','fact','fuck','absolute','matter','standard',
+# 				  'deep',
+# 				  'potential','perfect','popular','reason','person'])
+# stop_words.extend(['server','update','performance','system','program','software'])
+# stop_words.extend(['worth','full','point','real','part','amount','reason',
+# 				  'option','open','previous','huge','enjoyable','kind','ton',
+# 				  'person','launch','opinion','month','ability','current','use',
+# 				  'stupid','mess','slash','wololo','wrong'])
+# stop_words = list(set(stop_words))
 
 stop_words = stopwords.words('english')
 stop_words.extend(STOPWORDS)
-stop_words.extend(['player', 'play', 'people', 'game', 'steam','review',
-				  'day', 'year', 'hour', 'minute','time','moment','like',
-				  'world', 'yes', 'lol', 'lmao', 'cool', 'love', 'get',
-				  'good', 'great', 'nice', 'best', 'fun', 'awesome',
-				   'ever', 'kinda', 'shit', 'yeah', 'new', 'old',
-				  'big','small','high','low','many','much','lot','alot',
-				  'others','thank','http','thing','everyone','anyone','anything',
-				  'everything','cant','dont','guy','hello','plenty','entire',
-				  'youtube','something','someone','pro','con','guys',
-				  'haha', 'hehe','end','nothing','no','one',
-				  'fine','first','last','epic','english','bit',
-				  'terrible','overall','original','life','bad',
-				  'today','fps','gameplay','favorite','com','favourite'
-				  'man','word','version','pure','experience','www',
-				  'please','thanks','little','least','way','different',
-				  'style','man','men','super','problem','item','work','computer',
-				  'stuff','wait','early','access','sure','able','developer','wow','genre',
-				  'ive','rich','feel','fact','fuck','absolute','matter','standard',
-				  'deep',
-				  'potential','perfect','popular','reason','person'])
-stop_words.extend(['server','update','performance','system','program','software'])
-stop_words.extend(['worth','full','point','real','part','amount','reason',
-				  'option','open','previous','huge','enjoyable','kind','ton',
-				  'person','launch','opinion','month','ability','current','use',
-				  'stupid','mess','slash','wololo','wrong'])
-stop_words = list(set(stop_words))
+stop_words.extend(['im','youre','hes','shes','theyre','ive','its'])
+
+stop_words.extend(['sort','single','play','start','end','big','small','good','bad',
+	'kind','movie','title','time','year','hour','minute','thing','anything','everything',
+	'anyone','everyone','film','work','story','great','terrible','strong','cast','fun',
+	'worthy','moment','dialogue','people','person','perfect','rate','tone','eye','review',
+	'picture','man','guy','mind','line','piece','video','worth','cinema','script',
+	'watch','experience','viewer','feel','true','lot',
+	'wow','matter','high','low','genre','fact','awesome','popcorn','screen','bang','director',
+	'camera','key','studio','actor','season','potential',
+	'super','fan','easy','wonderful','perfect','reason',
+	'writer','feat','large','heart','tale','ride','spanish','filmmaker','idea','level','hitchcock',
+	'offer','plot','character','late','masterpiece','element',
+	'deep','performance','narrative','place','impeccable','day',
+	'final','bit','hard','let','world','mess','entire'
+])
 
 '''
 Filter by written_during_early_access=False and play_time_forever>60minutes
@@ -169,7 +188,7 @@ def process_keywords(review):
 	custom_kw_extractor = yake.KeywordExtractor(lan=language, n=max_ngram_size, dedupLim=deduplication_threshold, top=numOfKeywords, features=None)
 
 	keywords = custom_kw_extractor.extract_keywords(review)
-	keywords = sorted(keywords, key=lambda item:(item[1]), reverse=True)[:10]
+	keywords = sorted(keywords, key=lambda item:(item[1]))[:10]
 	keywords = [x[0] for x in keywords]
 	keywords = " ".join(keywords)
 	return keywords
@@ -186,6 +205,9 @@ def extract_keywords(reviews):
 	# Use yake to extract keywords for each review
 	review_keywords = list(map(process_keywords, reviews))
 	review_keywords = list(filter(lambda x: len(x)>0, review_keywords))
+
+	if len(review_keywords)==0:
+		return []
 
 	# Use count vectorizer to get keywords.
 	count_vec = CountVectorizer(binary=True)
@@ -224,7 +246,8 @@ def extract_common_keywords_and_phrases(all_keywords, all_keyphrases):
 	# keyphrases
 	print("Extract common keyphrases")
 	keyphrases_count = Counter(all_keyphrases)
-	keyphrases_dict = {x: count for x,count in keyphrases_count.items() if count>=keyphrase_count_threshold}
+	keyphrases_count = keyphrases_count.most_common()
+	keyphrases_dict = {x: count for x,count in keyphrases_count if count>=keyphrase_count_threshold}
 	keyphrases = keyphrases_dict.keys()
 
 	# keywords
