@@ -6,10 +6,10 @@ from app.accounts.models.user import User
 from app.utilities.reg_form import RegForm
 from werkzeug.urls import url_parse
 
-@app.route('/')
-@app.route('/index')
-def index():
-    return render_template('index.html')
+# @app.route('/')
+# @app.route('/index')
+# def index():
+#     return render_template('index.html')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -53,6 +53,11 @@ def register():
 @app.errorhandler(404)
 def not_found(error):
   return render_template("404.html"), 404
+
+# Database error handling
+@app.errorhandler(500)
+def database_error(error):
+    return render_template("500.html"), 500
 
 @app.shell_context_processor
 def make_shell_context():

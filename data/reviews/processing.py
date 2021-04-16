@@ -10,7 +10,7 @@ from rake_nltk import Rake
 import yake
 from collections import Counter
 
-# Game keywords
+# Game stopwords
 # stop_words = stopwords.words('english')
 # stop_words.extend(STOPWORDS)
 # stop_words.extend(['player', 'play', 'people', 'game', 'steam','review',
@@ -40,6 +40,7 @@ from collections import Counter
 # 				  'stupid','mess','slash','wololo','wrong'])
 # stop_words = list(set(stop_words))
 
+# Movie stopwords
 stop_words = stopwords.words('english')
 stop_words.extend(STOPWORDS)
 stop_words.extend(['im','youre','hes','shes','theyre','ive','its'])
