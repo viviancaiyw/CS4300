@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container">
     <div class="row justify-content-md-center">
-        <div class="col-10">
+        <div class="col-12">
             <div class="placeholder"></div>
             <div class="placeholder"></div>
             <h1 class="display-2 text-white search-title">NEXTGAME</h1>
@@ -13,20 +13,20 @@
                 <div class="card-body">
                     <div class="row justify-content-md-center">
                         <div class="col-11">
-                            <form>
+                            <form id="search-form">
                                 <div class="row search-card-row">
-                                    <div class="col-auto">
+                                    <div class="col-2">
                                         <span><strong>PLAYERS: </strong></span>
                                     </div>
 
-                                    <div class="col-2">
+                                    <div class="col-3">
                                         <input class="form-check-input" type="radio" name="playerType"
                                             id="playerTypeSingle">
                                         <label class="form-check-label" for="playerTypeSingle">
                                             <i class="bi bi-person-fill text-primary"></i> single-player
                                         </label>
                                     </div>
-                                    <div class="col-2">
+                                    <div class="col-3">
                                         <input class="form-check-input" type="radio" name="playerType"
                                             id="playerTypeMulti">
                                         <label class="form-check-label" for="playerTypeMulti">
@@ -36,41 +36,83 @@
                                 </div>
 
                                 <div class="row search-card-row">
-                                    <div class="col-auto">
+                                    <div class="col-2">
                                         <span><i class="bi bi-ui-checks"></i> <strong>GENRE: </strong></span>
                                     </div>
-                                    <div class="col-8">
-                                        <input type="text" class="form-control" id="gameGenre">
+                                    <div class="col-10">
+                                        <input class="search-tag-input" id="gameGenre" name="gameGenre"
+                                            aria-describedby="genreHelp">
+                                        <small id="genreHelp" class="form-text text-muted">Enter <b>game</b> genres you
+                                            are interested in</small>
                                     </div>
                                 </div>
 
-                                <div class="row search-card-row">
+                                <div class="row">
                                     <div class="col-auto">
                                         <strong>PIECES YOU ENJOY: </strong></span>
                                     </div>
-                                    <div class="col-auto">
-                                        <label for="booksEnjoy" class="form-label"><i class="bi bi-book text-primary"></i> Books</label>
-                                        <input type="text" class="form-control" id="booksEnjoy">
+                                </div>
+
+                                <div class="precision-placeholder"></div>
+
+                                <div class="row">
+                                    <div class="col-2">
+                                        <label for="booksEnjoy" class="form-label"><i
+                                                class="bi bi-book text-primary"></i> Book</label>
                                     </div>
-                                    <div class="col-auto">
-                                        <label for="moviesEnjoy" class="form-label"><i class="bi bi-tv text-primary"></i> Movies</label>
-                                        <input type="text" class="form-control" id="moviesEnjoy">
+                                    <div class="col-10">
+                                        <input type="text" disabled id="booksEnjoy" class="form-control"
+                                            placeholder="Not Supported Yet">
                                     </div>
-                                    <div class="col-auto">
-                                        <label for="gamesEnjoy" class="form-label"><i class="bi bi-suit-spade text-primary"></i> Games</label>
-                                        <input type="text" class="form-control" id="gamesEnjoy">
+                                </div>
+
+                                <div class="precision-placeholder"></div>
+
+                                <div class="row">
+                                    <div class="col-2">
+                                        <label for="moviesEnjoy" class="form-label"><i
+                                                class="bi bi-tv text-primary"></i> Movie</label>
+                                    </div>
+                                    <div class="col-10">
+                                        <input class="search-tag-input" id="movieEnjoy" name="movieEnjoy">
+                                    </div>
+                                </div>
+
+                                <div class="precision-placeholder"></div>
+
+                                <div class="row">
+                                    <div class="col-2">
+                                        <label for="gamesEnjoy" class="form-label"><i
+                                                class="bi bi-suit-spade text-primary"></i> Game</label>
+                                    </div>
+                                    <div class="col-10">
+                                        <input type="text" disabled id="gamesEnjoy" class="form-control"
+                                            placeholder="Not Supported Yet">
+                                    </div>
+                                </div>
+
+
+                                <div class="row search-card-row">
+                                    <div class="col-2">
+                                    </div>
+                                    <div class="col-10">
+                                        <small class="form-text text-muted">We will recommend you games based on
+                                            books/movies/games you already enjoy.</b></small>
                                     </div>
                                 </div>
 
                                 <div class="row search-card-row">
-                                    <div class="col-auto">
+                                    <div class="col-2">
                                         <strong><i class="bi bi-tags-fill"></i> TAGS: </strong></span>
                                     </div>
-                                    <div class="col-8">
-                                        <input type="text" class="form-control" id="gameTags">
+                                    <div class="col-10">
+                                        <input class="search-tag-input" name="gameTags" id="gameTags"
+                                            aria-describedby="tagHelp">
+                                        <small id="tagHelp" class="form-text text-muted">Enter other random traits you
+                                            want your game to have. <b>Supports up to tags with 5 words.</b></small>
                                     </div>
                                 </div>
-                                
+
                                 <button type="submit" class="btn btn-primary">Submit</button>
 
                             </form>
@@ -92,4 +134,66 @@
         {% endfor %}
     {% endif %}
     </form> -->
+{% endblock %}
+
+{% block script %}
+<script>
+    $('#search-form').submit(false);
+
+    let genres = ['adventure', 'action', 'arena', 'moba', 'real-time-strategy'];
+    let genreInput = document.querySelector('input[id=gameGenre]');
+    let genreTagify = new Tagify(genreInput, {
+        enforceWhitelist: true,
+        whitelist: genres,
+        dropdown: {
+            classname: "color-blue",
+            enabled: 0,
+            highlightFirst: true
+        },
+        editTags: false,
+        templates: {
+            dropdownItemNoMatch: function (data) {
+                return `
+                    No suggestion found, please enter valid items only.
+                `
+            }
+        }
+    });
+
+    let movies = ['Harry Potter', 'Forest Gump', 'Star Wars', 'Avengers', 'A Very Long Movie Name'];
+    let movieInput = document.querySelector('input[id=movieEnjoy]');
+    let movieTagify = new Tagify(movieInput, {
+        mode: 'select',
+        whitelist: movies,
+        dropdown: {
+            classname: "color-blue",
+            enabled: 0,
+            highlightFirst: true
+        },
+        templates: {
+            dropdownItemNoMatch: function (data) {
+                return `
+                    No suggestion found, please enter valid items only.
+                `
+            }
+        }
+    });
+    movieTagify.on('add', onMovieAdd);
+    function onMovieAdd(e) {
+        if (!movies.includes(e.detail.data.value)) {
+            movieTagify.removeAllTags();
+        }
+    }
+    let tagInput = document.querySelector('input[id=gameTags]');
+    let tagTagify = new Tagify(tagInput, {
+        pattern: /^(?:\b\w+\b[\s\r\n]*){1,5}$/,
+        transformTag: transformTag,
+    });
+
+
+    function transformTag(tagData) {
+        tagData.value = tagData.value.replace(/  +/g, ' ');;
+    }
+
+</script>
 {% endblock %}

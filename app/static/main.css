@@ -21,7 +21,11 @@ body {
 }
 
 .placeholder {
-    height: 3rem;
+    height: 2.5rem;
+}
+
+.precision-placeholder {
+    height: 1rem;
 }
 
 .search-title {
@@ -29,9 +33,17 @@ body {
 }
 
 .search-card {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.9);
 }
 
 .search-card-row {
     margin-bottom: 2.5rem;
+}
+
+.search-tag-input {
+    --tags-border-color: #BBB;
+    --tags-hover-border-color: #AAA;
+    --tag-bg: rgba(137,80,252,.2);
+    --tag-text-color: #8950fc;
+    border-radius: 4px;
 }
