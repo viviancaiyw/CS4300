@@ -9,6 +9,9 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet as wn
 
+from app.irsystem.models.movie import Movie
+from app.irsystem.models.game import Game
+
 
 lemmatizer = WordNetLemmatizer()
 tag_stop_words = ['game', 'play', 'video', 'steam']
