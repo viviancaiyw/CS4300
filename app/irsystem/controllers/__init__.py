@@ -24,7 +24,39 @@ from app import socketio
 from app.irsystem import irsystem 
 
 # Import module models
-from app.accounts.models.user import *
-from app.accounts.models.session import *
+# from app.accounts.models.user import *
+# from app.accounts.models.session import *
 
 import json
+import os
+
+from app.irsystem.models import DATA_DIR
+
+MOVIE_INFO_FILENAME = 'movie_info.json'
+GAME_INFO_FILENAME = 'game_info.json'
+
+G_REV_COMMON_KEYWORDS_PHRASES_FILENAME = 'common_keywords_phrases.json'
+G_REV_INV_KEYWORDS_PHRASES_FILENAME = 'game_inv_rev_keyword_phrases.json'
+G_REV_KEYWORD_VEC_FILENAME = 'game_rev_keyword_vec.json'
+G_REV_WORD_TO_SYNPHRASES_FILENAME = 'game_rev_word_to_synphrase.json'
+
+with open(os.path.join(DATA_DIR, G_REV_COMMON_KEYWORDS_PHRASES_FILENAME), 'r', encoding='utf8') as in_json_file:
+	G_REV_COMMON_KEYWORDS_PHRASES = json.load(in_json_file)
+
+with open(os.path.join(DATA_DIR, G_REV_INV_KEYWORDS_PHRASES_FILENAME), 'r', encoding='utf8') as in_json_file:
+	G_REV_INV_KEYWORDS_PHRASES = json.load(in_json_file)
+
+with open(os.path.join(DATA_DIR, G_REV_KEYWORD_VEC_FILENAME), 'r', encoding='utf8') as in_json_file:
+	G_REV_KEYWORD_VEC = json.load(in_json_file)
+
+with open(os.path.join(DATA_DIR, G_REV_WORD_TO_SYNPHRASES_FILENAME), 'r', encoding='utf8') as in_json_file:
+	G_REV_WORD_TO_SYNPHRASES = json.load(in_json_file)
+
+with open(os.path.join(DATA_DIR, MOVIE_INFO_FILENAME), 'r', encoding='utf8') as in_json_file:
+	MOVIE_INFO = json.load(in_json_file)
+
+with open(os.path.join(DATA_DIR, GAME_INFO_FILENAME), 'r', encoding='utf8') as in_json_file:
+	GAME_INFO = json.load(in_json_file)
+
+
+

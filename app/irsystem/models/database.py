@@ -1,10 +1,11 @@
-from app.irsystem.models import db, Book, Movie
+from app.irsystem.models import db, DATA_DIR
+from app.irsystem.models.movie import Movie
+from app.irsystem.models.game import Game
 import json
 import os
 
 
 def init_db():
-	DATA_DIR = os.path.abspath(os.path.join(__file__, "..", "..", "..", "data"))
 	MOVIE_INFO_FILENAME = "movie_info.json"
 	GAME_INFO_FILENAME = "game_info.json"
 

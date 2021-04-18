@@ -12,6 +12,7 @@ from nltk.corpus import wordnet as wn
 from app.irsystem.models.movie import Movie
 from app.irsystem.models.game import Game
 
+from app.irsystem.controllers import G_REV_COMMON_KEYWORDS_PHRASES, G_REV_INV_KEYWORDS_PHRASES, G_REV_KEYWORD_VEC, G_REV_WORD_TO_SYNPHRASES, MOVIE_INFO, GAME_INFO
 
 lemmatizer = WordNetLemmatizer()
 tag_stop_words = ['game', 'play', 'video', 'steam']
@@ -415,45 +416,49 @@ return [(app_id, (score, tag_matchs))]
 def match_tags_and_movie(input_tags, movielink):
 
 	# TODO: remove
-	path = '/Users/viviancai/Desktop/cs4300/cs4300sp2021-cw887-qh75-rz92-yc687-yl698/data/reviews/'
+	# path = '/Users/viviancai/Desktop/cs4300/cs4300sp2021-cw887-qh75-rz92-yc687-yl698/data/reviews/'
 	
-	with open(path+'keyphrases_and_keywords.json', 'r', encoding='utf8') as in_json_file:
-		common_keywords_keyphrases = json.load(in_json_file)
+	# with open(path+'keyphrases_and_keywords.json', 'r', encoding='utf8') as in_json_file:
+	# 	common_keywords_keyphrases = json.load(in_json_file)
 
-	with open(path+'appid_to_vec.json', 'r', encoding='utf8') as in_json_file:
-		appid_to_vec = json.load(in_json_file)
+	# with open(path+'appid_to_vec.json', 'r', encoding='utf8') as in_json_file:
+	# 	appid_to_vec = json.load(in_json_file)
 
-	# with open(path+'movielink_to_vec.json', 'r', encoding='utf8') as in_json_file:
-		# movielink_to_vec = json.load(in_json_file)
+	# # with open(path+'movielink_to_vec.json', 'r', encoding='utf8') as in_json_file:
+	# 	# movielink_to_vec = json.load(in_json_file)
 
-	with open(path+'phrase_word_to_synphrase.json', 'r', encoding='utf8') as in_json_file:
-		word_to_synphrases = json.load(in_json_file)
+	# with open(path+'phrase_word_to_synphrase.json', 'r', encoding='utf8') as in_json_file:
+	# 	word_to_synphrases = json.load(in_json_file)
 
-	with open(path+'inverse_keyword_phrases.json', 'r', encoding='utf8') as in_json_file:
-		inv_keywords_phrases = json.load(in_json_file)
+	# with open(path+'inverse_keyword_phrases.json', 'r', encoding='utf8') as in_json_file:
+	# 	inv_keywords_phrases = json.load(in_json_file)
 
 	start = time.time()
 	tags = _clean_tags(input_tags)
 
 	# Match with tags
-	keyword_matchs = _match_games_using_keywords(tags, appid_to_vec, common_keywords_keyphrases)
-	keyphrase_matchs = _match_games_using_keyphrases(tags, appid_to_vec, common_keywords_keyphrases, word_to_synphrases, inv_keywords_phrases)
+	keyword_matchs = _match_games_using_keywords(tags, G_REV_KEYWORD_VEC, G_REV_COMMON_KEYWORDS_PHRASES)
+	keyphrase_matchs = _match_games_using_keyphrases(tags, G_REV_KEYWORD_VEC, G_REV_COMMON_KEYWORDS_PHRASES, G_REV_WORD_TO_SYNPHRASES, G_REV_INV_KEYWORDS_PHRASES)
 
 	res = _merge_keyword_keyphrase_match_results(keyword_matchs, keyphrase_matchs)
 
 
 	# Now match with movie
-	with open(path+'movie_info/info_'+movielink+'.json', 'r', encoding='utf8') as in_json_file:
-		movie_info = json.load(in_json_file)
+	# with open(path+'movie_info/info_'+movielink+'.json', 'r', encoding='utf8') as in_json_file:
+		# movie_info = json.load(in_json_file)
 
-	movie_tags = [word for word in movie_info['keywords']]
-	movie_tags.extend([phrase for phrase in movie_info['keyphrases']])
+	# movie_info = Movie.query.filter_by(link_id=movielink).one()
+	movie_info = MOVIE_INFO[movielink]
+	print(movie_info)
+
+	movie_tags = [word for word in movie_info['review_keywords']]
+	movie_tags.extend([phrase for phrase in movie_info['review_keyphrases']])
 	filtered_appids = [x[0] for x in res]
-	filtered_appid_to_vec = dict(filter(lambda x: x[1]['app_id'] in filtered_appids, appid_to_vec.items()))
+	filtered_appid_to_vec = dict(filter(lambda x: x[1]['app_id'] in filtered_appids, G_REV_KEYWORD_VEC.items()))
 
 
-	movie_keyword_matchs = _match_games_using_keywords(movie_tags, filtered_appid_to_vec, common_keywords_keyphrases)
-	movie_keyphrase_matchs = _match_games_using_keyphrases(movie_tags, filtered_appid_to_vec, common_keywords_keyphrases, word_to_synphrases, inv_keywords_phrases)
+	movie_keyword_matchs = _match_games_using_keywords(movie_tags, filtered_appid_to_vec, G_REV_COMMON_KEYWORDS_PHRASES)
+	movie_keyphrase_matchs = _match_games_using_keyphrases(movie_tags, filtered_appid_to_vec, G_REV_COMMON_KEYWORDS_PHRASES, G_REV_WORD_TO_SYNPHRASES, G_REV_INV_KEYWORDS_PHRASES)
 
 	movie_res = _merge_keyword_keyphrase_match_results(movie_keyword_matchs, movie_keyphrase_matchs)
 
