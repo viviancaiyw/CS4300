@@ -71,9 +71,13 @@ def _clean_tag(tag):
 
 
 '''
-Clean a lis tof tags.
+Clean a list of tags.
 '''
 def _clean_tags(tags):
+	# Safety check
+	if len(tags)==0:
+		return []
+
 	tags = list(map(_clean_tag, tags))
 
 	# Filter tags that are stopwords.
@@ -235,6 +239,9 @@ Get keyword match results.
 return: ranked [(app_id, (score, word_matchs))]
 '''
 def _match_games_using_keywords(tags, appid_to_vec, common_keywords_keyphrases):
+	# Safety check
+	if len(tags) == 0:
+		return []
 
 	def _get_sim_res(d1, d2, norm1, norm2, addedword_to_originalwords):
 		(score, intersect) = _cos_sim(d1, d2, norm1, norm2)
@@ -274,6 +281,10 @@ Get keyphrase match results.
 return: ranked [(app_id, (score, phrase_matchs))]
 '''
 def _match_games_using_keyphrases(tags, appid_to_vec, common_keywords_keyphrases, word_to_synphrases, inv_keywords_phrases):
+	# Safety check
+	if len(tags) == 0:
+		return []
+
 	weight = dict()
 
 	word_to_tags = _get_word_to_tags(tags)
@@ -319,6 +330,10 @@ Merge keyword match results and keyphrase match results.
 return [(app_id, tag_matchs)] in ranking order.
 '''
 def _merge_keyword_keyphrase_match_results(keyword_matchs, keyphrase_matchs):
+	# Safety check
+	if len(keyword_matchs)==0 and len(keyphrase_matchs)==0:
+		return []
+
 	# Assign new score.
 	num_keyword_matches = len(keyword_matchs)
 
@@ -431,6 +446,7 @@ return [(app_id, (score, tag_matchs))]
 def match_tags_and_movie(input_tags, movielink):
 
 	start = time.time()
+	print(input_tags, flush=True)
 	tags = _clean_tags(input_tags)
 
 	# Match with tags
@@ -441,15 +457,15 @@ def match_tags_and_movie(input_tags, movielink):
 
 
 	# Now match with movie
-	USE_DB = True
-	if USE_DB:
-		movie_info = Movie.query.filter_by(link_id=movielink).one()
-		movie_tags = [word for word in json.loads(movie_info.review_keywords)]
-		movie_tags.extend([phrase for phrase in json.loads(movie_info.review_keyphrases)])
-	else:
-		movie_info = MOVIE_INFO[movielink]
-		movie_tags = [word for word in movie_info['review_keywords']]
-		movie_tags.extend([phrase for phrase in movie_info['review_keyphrases']])
+	# USE_DB = False
+	# if USE_DB:
+	# 	movie_info = Movie.query.filter_by(link_id=movielink).one()
+	# 	movie_tags = [word for word in json.loads(movie_info.review_keywords)]
+	# 	movie_tags.extend([phrase for phrase in json.loads(movie_info.review_keyphrases)])
+	# else:
+	movie_info = MOVIE_INFO[movielink]
+	movie_tags = [word for word in movie_info['review_keywords']]
+	movie_tags.extend([phrase for phrase in movie_info['review_keyphrases']])
 
 	filtered_appids = [x[0] for x in res]
 	filtered_appid_to_vec = dict(filter(lambda x: x[1]['app_id'] in filtered_appids, G_REV_KEYWORD_VEC.items()))
