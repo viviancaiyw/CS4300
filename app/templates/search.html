@@ -13,22 +13,22 @@
                 <div class="card-body">
                     <div class="row justify-content-md-center">
                         <div class="col-11">
-                            <form id="search-form">
+                            <form id="search-form" action="/search" method="post" accept-charset="utf-8">
                                 <div class="row search-card-row">
                                     <div class="col-2">
                                         <span><strong>PLAYERS: </strong></span>
                                     </div>
 
                                     <div class="col-3">
-                                        <input class="form-check-input" type="checkbox" name="playerType"
-                                            id="playerTypeSingle">
+                                        <input class="form-check-input" type="checkbox" name="playerTypeSingle"
+                                            id="playerTypeSingle" checked>
                                         <label class="form-check-label" for="playerTypeSingle">
                                             <i class="bi bi-person-fill text-primary"></i> single-player
                                         </label>
                                     </div>
                                     <div class="col-3">
-                                        <input class="form-check-input" type="checkbox" name="playerType"
-                                            id="playerTypeMulti">
+                                        <input class="form-check-input" type="checkbox" name="playerTypeMulti"
+                                            id="playerTypeMulti" checked>
                                         <label class="form-check-label" for="playerTypeMulti">
                                             <i class="bi bi-people-fill text-primary"></i> multi-player
                                         </label>
@@ -70,7 +70,7 @@
 
                                 <div class="row">
                                     <div class="col-2">
-                                        <label for="moviesEnjoy" class="form-label"><i
+                                        <label for="movieEnjoy" class="form-label"><i
                                                 class="bi bi-tv text-primary"></i> Movie</label>
                                     </div>
                                     <div class="col-10">
@@ -125,22 +125,51 @@
     </div>
 </div>
 
-<!-- <form class="form-inline global-search">
-    {% if data %}
-        <h1>{{output_message}}</h1>
-        {% for d in data %}
-            <br>
-            <p>{{d}}</p>
-        {% endfor %}
-    {% endif %}
-    </form> -->
+<input type="hidden" id="moviesData" value="{% if moviesData %}{% print(moviesData) %}{% else %}[]{% endif %}">
+<input type="hidden" id="genresData" value="{% if genresData %}{% print(genresData) %}{% else %}[]{% endif %}">
 {% endblock %}
 
 {% block script %}
 <script>
-    $('#search-form').submit(false);
+    /*
+     * Parses form data into the following format:
+     * {
+     * 'playerTypeSingle': Bool (true = selected, false = not selected)
+     * 'playerTypeMulti': Bool
+     * 'gameGenre': [String] (list of genres in input)
+     * 'movieEnjoy': String (movie id)
+     * 'gameTags': [String] (list of tags)
+     * }
+     */
+    $('#search-form').submit(function(e) {
+        $("#playerTypeSingle").val($('#playerTypeSingle').is(":checked"));
+        $("#playerTypeMulti").val($('#playerTypeMulti').is(":checked"));
+        if($("#playerTypeMulti").val() === "false" && $("#playerTypeSingle").val() === "false") {
+            formIncompleteAlert("Check at least multiplayer or single player!");
+            e.preventDefault();
+            return;
+        }
+        if($("#gameGenre").val() === "" && $("#movieEnjoy").val() === "" && $("#gameTags").val() === "") {
+            formIncompleteAlert("Please don't leave everything blank : (");
+            e.preventDefault();
+            return;
+        }
+        if($("#gameGenre").val() !== "") {
+            $("#gameGenre").val(JSON.stringify(JSON.parse($("#gameGenre").val()).map(x => x.value)));
+        }
+        if($("#movieEnjoy").val() !== "") {
+            $("#movieEnjoy").val(JSON.parse($("#movieEnjoy").val()).map(x => x.value)[0]);
+        }
+        if($("#gameTags").val() !== "") {
+            $("#gameTags").val(JSON.stringify(JSON.parse($("#gameTags").val()).map(x => x.value)));
+        }        
+    });
 
-    let genres = ['adventure', 'action', 'arena', 'moba', 'real-time-strategy'];
+    function formIncompleteAlert(custom="") {
+        alert("Please compelte the form before submitting!\n" + custom);
+    }
+
+    let genres = JSON.parse($("#genresData").val());
     let genreInput = document.querySelector('input[id=gameGenre]');
     let genreTagify = new Tagify(genreInput, {
         enforceWhitelist: true,
@@ -160,7 +189,7 @@
         }
     });
 
-    let movies = ['Harry Potter', 'Forest Gump', 'Star Wars', 'Avengers', 'A Very Long Movie Name'];
+    let movies = JSON.parse($("#moviesData").val());
     let movieInput = document.querySelector('input[id=movieEnjoy]');
     let movieTagify = new Tagify(movieInput, {
         mode: 'select',
