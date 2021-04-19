@@ -7,6 +7,8 @@ from typing import List, Dict, Tuple, Optional
 import nltk
 import pandas as pd
 
+from app.irsystem.controllers import MOVIE_INFO
+
 
 def _get_parent_folder(path: str, level_up: int) -> str:
     res = path
@@ -127,6 +129,20 @@ def _get_top_match_games_for_a_movie(filtered_mov_name: str) -> List[Tuple]:
     return res
 
 
+def get_top_games_from_title(movielink):
+    # load data
+    movie_name = MOVIE_INFO[movielink]['name']
+    mov_4_col_path = os.path.join(DATA_DIR, 'movie_data',
+                                  'movie_title_filtered_df_3.csv')
+    with open(mov_4_col_path, 'r') as f:
+        movie_filtered_df = pd.read_csv(f)
+    movie_filtered_name = list(
+        movie_filtered_df[
+            movie_filtered_df['original_title'] == movie_name
+        ].filtered_name.values)[0]
+    return _get_top_match_games_for_a_movie(movie_filtered_name)
+
+
 # TODO: delete this helper
 # def inv_title_map():
 #     movie_file = os.path.join(DATA_DIR, 'movie_data',
@@ -150,5 +166,6 @@ def _get_top_match_games_for_a_movie(filtered_mov_name: str) -> List[Tuple]:
 
 
 if __name__ == '__main__':
-    get_top_match_games('Max Payne')
+    print(get_top_games_from_title('max_payne'))
+    # get_top_match_games('Max Payne')
     # print(match_movie_titles_to_games('LEGO'))
