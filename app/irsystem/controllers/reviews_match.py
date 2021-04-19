@@ -8,6 +8,7 @@ import time
 import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet as wn
+nltk.download('wordnet')
 
 from app.irsystem.models.movie import Movie
 from app.irsystem.models.game import Game
