@@ -1,8 +1,8 @@
 # from flask_login import login_required
 
 from . import *
-from app.irsystem.controllers.get_input_lists import *
-from app.irsystem.controllers.tags_movie_match import *
+from app.irsystem.controllers.get_info import *
+from app.irsystem.controllers.reviews_match import *
 import json
 
 project_name = "Steamy Reviews: Game Recommendation Engine"
