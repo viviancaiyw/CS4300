@@ -441,13 +441,16 @@ def match_tags_and_movie(input_tags, movielink):
 
 
 	# Now match with movie
+	USE_DB = True
+	if USE_DB:
+		movie_info = Movie.query.filter_by(link_id=movielink).one()
+		movie_tags = [word for word in json.loads(movie_info.review_keywords)]
+		movie_tags.extend([phrase for phrase in json.loads(movie_info.review_keyphrases)])
+	else:
+		movie_info = MOVIE_INFO[movielink]
+		movie_tags = [word for word in movie_info['review_keywords']]
+		movie_tags.extend([phrase for phrase in movie_info['review_keyphrases']])
 
-	# movie_info = Movie.query.filter_by(link_id=movielink).one()
-	movie_info = MOVIE_INFO[movielink]
-	# print(movie_info)
-
-	movie_tags = [word for word in movie_info['review_keywords']]
-	movie_tags.extend([phrase for phrase in movie_info['review_keyphrases']])
 	filtered_appids = [x[0] for x in res]
 	filtered_appid_to_vec = dict(filter(lambda x: x[1]['app_id'] in filtered_appids, G_REV_KEYWORD_VEC.items()))
 

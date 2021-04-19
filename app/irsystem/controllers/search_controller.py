@@ -3,6 +3,7 @@
 from . import *
 
 from app.irsystem.controllers.tags_movie_match import *
+# from app.irsystem.models.database import init_db, drop_db
 
 project_name = "Steamy Reviews: Game Recommendation Engine"
 net_id = "Chang Wei: cw887, Qichen Hu: qh75, Yuwen Cai: yc687, Yitian Lin: yl698"
@@ -10,6 +11,8 @@ net_id = "Chang Wei: cw887, Qichen Hu: qh75, Yuwen Cai: yc687, Yitian Lin: yl698
 
 @irsystem.route('/', methods=['GET'])
 def home():
+    # drop_db()
+    # init_db()
     return render_template('search.html')
 
 @irsystem.route('/search', methods=['GET', 'POST'])

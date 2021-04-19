@@ -11,7 +11,7 @@ class Game(db.Model):
 	tags = db.Column(db.Text)
 	genre = db.Column(db.Text)
 	num_players = db.Column(db.Text)
-	rating = db.Column(db.Integer)
+	rating = db.Column(db.String(31))
 	mature_content = db.Column(db.Boolean)
 	url = db.Column(db.String(255))
 	desc_keywords = db.Column(db.Text)
