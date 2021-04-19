@@ -446,15 +446,16 @@ return [(app_id, (score, tag_matchs))]
 def match_tags_and_movie(input_tags, movielink):
 
 	start = time.time()
-	print(input_tags, flush=True)
 	tags = _clean_tags(input_tags)
 
 	# Match with tags
-	keyword_matchs = _match_games_using_keywords(tags, G_REV_KEYWORD_VEC, G_REV_COMMON_KEYWORDS_PHRASES)
-	keyphrase_matchs = _match_games_using_keyphrases(tags, G_REV_KEYWORD_VEC, G_REV_COMMON_KEYWORDS_PHRASES, G_REV_WORD_TO_SYNPHRASES, G_REV_INV_KEYWORDS_PHRASES)
+	if len(tags)!=0:
+		keyword_matchs = _match_games_using_keywords(tags, G_REV_KEYWORD_VEC, G_REV_COMMON_KEYWORDS_PHRASES)
+		keyphrase_matchs = _match_games_using_keyphrases(tags, G_REV_KEYWORD_VEC, G_REV_COMMON_KEYWORDS_PHRASES, G_REV_WORD_TO_SYNPHRASES, G_REV_INV_KEYWORDS_PHRASES)
 
-	res = _merge_keyword_keyphrase_match_results(keyword_matchs, keyphrase_matchs)
-
+		res = _merge_keyword_keyphrase_match_results(keyword_matchs, keyphrase_matchs)
+	else:
+		res = []
 
 	# Now match with movie
 	# USE_DB = False
@@ -463,19 +464,22 @@ def match_tags_and_movie(input_tags, movielink):
 	# 	movie_tags = [word for word in json.loads(movie_info.review_keywords)]
 	# 	movie_tags.extend([phrase for phrase in json.loads(movie_info.review_keyphrases)])
 	# else:
-	movie_info = MOVIE_INFO[movielink]
-	movie_tags = [word for word in movie_info['review_keywords']]
-	movie_tags.extend([phrase for phrase in movie_info['review_keyphrases']])
+	if movielink is not None:
+		movie_info = MOVIE_INFO[movielink]
+		movie_tags = [word for word in movie_info['review_keywords']]
+		movie_tags.extend([phrase for phrase in movie_info['review_keyphrases']])
 
-	filtered_appids = [x[0] for x in res]
-	filtered_appid_to_vec = dict(filter(lambda x: x[1]['app_id'] in filtered_appids, G_REV_KEYWORD_VEC.items()))
+		filtered_appids = [x[0] for x in res]
+		filtered_appid_to_vec = dict(filter(lambda x: x[1]['app_id'] in filtered_appids, G_REV_KEYWORD_VEC.items()))
 
 
-	movie_keyword_matchs = _match_games_using_keywords(movie_tags, filtered_appid_to_vec, G_REV_COMMON_KEYWORDS_PHRASES)
-	movie_keyphrase_matchs = _match_games_using_keyphrases(movie_tags, filtered_appid_to_vec, G_REV_COMMON_KEYWORDS_PHRASES, G_REV_WORD_TO_SYNPHRASES, G_REV_INV_KEYWORDS_PHRASES)
+		movie_keyword_matchs = _match_games_using_keywords(movie_tags, filtered_appid_to_vec, G_REV_COMMON_KEYWORDS_PHRASES)
+		movie_keyphrase_matchs = _match_games_using_keyphrases(movie_tags, filtered_appid_to_vec, G_REV_COMMON_KEYWORDS_PHRASES, G_REV_WORD_TO_SYNPHRASES, G_REV_INV_KEYWORDS_PHRASES)
 
-	movie_res = _merge_keyword_keyphrase_match_results(movie_keyword_matchs, movie_keyphrase_matchs)
-
+		movie_res = _merge_keyword_keyphrase_match_results(movie_keyword_matchs, movie_keyphrase_matchs)
+	else:
+		movie_res = []
+		
 	combined = _merge_two_results(res, movie_res, 0.9, 0.1)
 	print(time.time()-start)
 
