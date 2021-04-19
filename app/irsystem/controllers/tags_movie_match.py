@@ -405,7 +405,22 @@ def _merge_two_results(tags_match, movie_match, tags_weight, movie_weight):
 	return res
 
 
-
+def _get_game_list_with_info(res):
+	lst = []
+	for item in res:
+		app_id = item['app_id']
+		tag_matchs = item['tags_match']
+		info = {
+				'app_id': app_id,
+				'developer': GAME_INFO[app_id]['developer'],
+				'publisher': GAME_INFO[app_id]['publisher'],
+				'num_players': GAME_INFO[app_id]['num_players'],
+				'rating': GAME_INFO[app_id]['rating'],
+				'url': GAME_INFO[app_id]['url'],
+				'tag_matchs': tag_matchs
+				}
+		lst.append(info)
+	return lst
 
 
 '''
@@ -414,24 +429,6 @@ Get tags and movie keyword match results.
 return [(app_id, (score, tag_matchs))]
 '''
 def match_tags_and_movie(input_tags, movielink):
-
-	# TODO: remove
-	# path = '/Users/viviancai/Desktop/cs4300/cs4300sp2021-cw887-qh75-rz92-yc687-yl698/data/reviews/'
-	
-	# with open(path+'keyphrases_and_keywords.json', 'r', encoding='utf8') as in_json_file:
-	# 	common_keywords_keyphrases = json.load(in_json_file)
-
-	# with open(path+'appid_to_vec.json', 'r', encoding='utf8') as in_json_file:
-	# 	appid_to_vec = json.load(in_json_file)
-
-	# # with open(path+'movielink_to_vec.json', 'r', encoding='utf8') as in_json_file:
-	# 	# movielink_to_vec = json.load(in_json_file)
-
-	# with open(path+'phrase_word_to_synphrase.json', 'r', encoding='utf8') as in_json_file:
-	# 	word_to_synphrases = json.load(in_json_file)
-
-	# with open(path+'inverse_keyword_phrases.json', 'r', encoding='utf8') as in_json_file:
-	# 	inv_keywords_phrases = json.load(in_json_file)
 
 	start = time.time()
 	tags = _clean_tags(input_tags)
@@ -444,12 +441,10 @@ def match_tags_and_movie(input_tags, movielink):
 
 
 	# Now match with movie
-	# with open(path+'movie_info/info_'+movielink+'.json', 'r', encoding='utf8') as in_json_file:
-		# movie_info = json.load(in_json_file)
 
 	# movie_info = Movie.query.filter_by(link_id=movielink).one()
 	movie_info = MOVIE_INFO[movielink]
-	print(movie_info)
+	# print(movie_info)
 
 	movie_tags = [word for word in movie_info['review_keywords']]
 	movie_tags.extend([phrase for phrase in movie_info['review_keyphrases']])
@@ -465,7 +460,10 @@ def match_tags_and_movie(input_tags, movielink):
 	combined = _merge_two_results(res, movie_res, 0.9, 0.1)
 	print(time.time()-start)
 
-	return combined[:20]
+	combined =  combined[:20]
+	# print(combined)
+
+	return _get_game_list_with_info(combined)
 
 
 
