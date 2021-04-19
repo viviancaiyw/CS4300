@@ -396,25 +396,33 @@ def _merge_two_results(tags_match, movie_match, tags_weight, movie_weight):
 	def _compute_score_for_one_game(app_id):
 		if app_id in tags_d:
 			tags_rank = tags_d[app_id][0]
+			num_tags_match_plus_one = len(tags_d[app_id][1]) + 1
 		else:
 			tags_rank = len_tags_match
+			num_tags_match_plus_one = 1
 
 		if app_id in movie_d:
 			movie_rank = movie_d[app_id][0]
 		else:
 			movie_rank = len_movie_match
 
-		tags_score = (1-tags_rank/len_tags_match) * len(tags_d[app_id][1])
-		movie_score = (1-movie_rank/len_movie_match)
+		tags_score = (1-tags_rank/(len_tags_match+1)) * num_tags_match_plus_one
+		movie_score = (1-movie_rank/(len_movie_match+1))
 		score = tags_weight*tags_score + movie_weight*movie_score
 		return score
 
-	allgames = set(tags_d.keys()).intersection(set(movie_d.keys()))
-	res = [
-			{'app_id':app_id, 'score':_compute_score_for_one_game(app_id),\
-	  		'tags_match': tags_d[app_id][1], 'num_movie_keyword_match': len(movie_d[app_id][1]),
-	  		'tags_rank': tags_d[app_id][0], 'movie_rank': movie_d[app_id][0]}
-	  		for app_id in allgames]
+	allgames = set(tags_d.keys()).union(set(movie_d.keys()))
+	print(movie_match, flush=True)
+	res = []
+	for app_id in allgames:
+		info = {}
+		info['app_id'] = app_id
+		info['score'] = _compute_score_for_one_game(app_id)
+		info['tags_match'] = tags_d[app_id][1] if app_id in tags_d else []
+		info['num_movie_keyword_match'] = len(movie_d[app_id][1]) if app_id in movie_d else 0
+		info['tags_rank'] = tags_d[app_id][0] if app_id in tags_d else -1
+		info['movie_rank'] = movie_d[app_id][0] if app_id in movie_d else -1
+		res.append(info)
 	res = sorted(res, key=lambda x: (-x['score'], -len(x['tags_match']), -x['num_movie_keyword_match']))
 
 	return res
@@ -479,7 +487,7 @@ def match_tags_and_movie(input_tags, movielink):
 		movie_res = _merge_keyword_keyphrase_match_results(movie_keyword_matchs, movie_keyphrase_matchs)
 	else:
 		movie_res = []
-		
+
 	combined = _merge_two_results(res, movie_res, 0.9, 0.1)
 	print(time.time()-start)
 
