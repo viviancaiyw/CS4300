@@ -1,8 +1,11 @@
 # from flask_login import login_required
 
 from . import *
+
 from app.irsystem.controllers.get_info import *
 from app.irsystem.controllers.reviews_match import *
+from app.irsystem.controllers.titles_match import *
+
 import json
 
 project_name = "Steamy Reviews: Game Recommendation Engine"
@@ -21,5 +24,9 @@ def search():
 def search_action():
     tags = json.loads(request.form.get('gameTags')) if request.form.get('gameTags') else []
     movie = request.form.get('movieEnjoy') if request.form.get('movieEnjoy') else None
-    genres = json.loads(request.form.get('gameGenre')) if request.form.get('gameGenre') else []
-    return Response(str(match_tags_and_movie(tags, movie)))
+    genres = json.loads(request.form.get('gameGenre')) if request.form.get('gameGenre') else [] # TODO: add it to response
+    response_body = {
+        "based on keywords": str(match_tags_and_movie(tags, movie)),
+        "based on titles": str(get_top_games_from_title(movie))
+    }
+    return Response(json.dumps(response_body))
