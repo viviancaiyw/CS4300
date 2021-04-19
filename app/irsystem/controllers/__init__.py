@@ -40,6 +40,10 @@ G_REV_INV_KEYWORDS_PHRASES_FILENAME = 'game_inv_rev_keyword_phrases.json'
 G_REV_KEYWORD_VEC_FILENAME = 'game_rev_keyword_vec.json'
 G_REV_WORD_TO_SYNPHRASES_FILENAME = 'game_rev_word_to_synphrase.json'
 
+MOVIE_NAME_FILENAME = 'movie_titles.json'
+G_GENRE_FILENAME = 'genre_list.json'
+
+
 with open(os.path.join(DATA_DIR, G_REV_COMMON_KEYWORDS_PHRASES_FILENAME), 'r', encoding='utf8') as in_json_file:
 	G_REV_COMMON_KEYWORDS_PHRASES = json.load(in_json_file)
 
@@ -57,6 +61,13 @@ with open(os.path.join(DATA_DIR, MOVIE_INFO_FILENAME), 'r', encoding='utf8') as 
 
 with open(os.path.join(DATA_DIR, GAME_INFO_FILENAME), 'r', encoding='utf8') as in_json_file:
 	GAME_INFO = json.load(in_json_file)
+
+with open(os.path.join(DATA_DIR, MOVIE_NAME_FILENAME), 'r', encoding='utf8') as in_json_file:
+	MOVIE_TITLES = json.load(in_json_file)
+
+with open(os.path.join(DATA_DIR, G_GENRE_FILENAME), 'r', encoding='utf8') as in_json_file:
+	GAME_GENRES = json.load(in_json_file)
+
 
 
 
