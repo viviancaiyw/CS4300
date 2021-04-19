@@ -125,15 +125,8 @@
     </div>
 </div>
 
-<!-- <form class="form-inline global-search">
-    {% if data %}
-        <h1>{{output_message}}</h1>
-        {% for d in data %}
-            <br>
-            <p>{{d}}</p>
-        {% endfor %}
-    {% endif %}
-    </form> -->
+<input type="hidden" id="moviesData" value="{% if moviesData %}{% print(moviesData) %}{% else %}[]{% endif %}">
+<input type="hidden" id="genresData" value="{% if genresData %}{% print(genresData) %}{% else %}[]{% endif %}">
 {% endblock %}
 
 {% block script %}
@@ -176,7 +169,7 @@
         alert("Please compelte the form before submitting!\n" + custom);
     }
 
-    let genres = ['adventure', 'action', 'arena', 'moba', 'real-time-strategy'];
+    let genres = JSON.parse($("#genresData").val());
     let genreInput = document.querySelector('input[id=gameGenre]');
     let genreTagify = new Tagify(genreInput, {
         enforceWhitelist: true,
@@ -196,7 +189,7 @@
         }
     });
 
-    let movies = ['Harry Potter', 'Forest Gump', 'Star Wars', 'Avengers', 'A Very Long Movie Name'];
+    let movies = JSON.parse($("#moviesData").val());
     let movieInput = document.querySelector('input[id=movieEnjoy]');
     let movieTagify = new Tagify(movieInput, {
         mode: 'select',
