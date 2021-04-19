@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <div class="row justify-content-md-center">
                         <div class="col-11">
-                            <form id="search-form" action="/search" method="post" accept-charset="utf-8">
+                            <form id="search-form" action="/search-run" method="post" accept-charset="utf-8">
                                 <div class="row search-card-row">
                                     <div class="col-2">
                                         <span><strong>PLAYERS: </strong></span>
@@ -158,7 +158,7 @@
             $("#gameGenre").val(JSON.stringify(JSON.parse($("#gameGenre").val()).map(x => x.value)));
         }
         if($("#movieEnjoy").val() !== "") {
-            $("#movieEnjoy").val(JSON.parse($("#movieEnjoy").val()).map(x => x.value)[0]);
+            $("#movieEnjoy").val(JSON.parse($("#movieEnjoy").val()).map(x => x.id)[0]);
         }
         if($("#gameTags").val() !== "") {
             $("#gameTags").val(JSON.stringify(JSON.parse($("#gameTags").val()).map(x => x.value)));
@@ -177,7 +177,8 @@
         dropdown: {
             classname: "color-blue",
             enabled: 0,
-            highlightFirst: true
+            highlightFirst: true,
+            maxItems: 30
         },
         editTags: false,
         templates: {
@@ -189,7 +190,9 @@
         }
     });
 
-    let movies = JSON.parse($("#moviesData").val());
+    let movies = JSON.parse($("#moviesData").val()).map(function(x){
+        return {value: x[0], id: x[1]};
+    });
     let movieInput = document.querySelector('input[id=movieEnjoy]');
     let movieTagify = new Tagify(movieInput, {
         mode: 'select',
@@ -197,7 +200,8 @@
         dropdown: {
             classname: "color-blue",
             enabled: 0,
-            highlightFirst: true
+            highlightFirst: true,
+            maxItems: 30,
         },
         templates: {
             dropdownItemNoMatch: function (data) {
@@ -209,7 +213,7 @@
     });
     movieTagify.on('add', onMovieAdd);
     function onMovieAdd(e) {
-        if (!movies.includes(e.detail.data.value)) {
+        if (! e.detail.data.hasOwnProperty('id')) {
             movieTagify.removeAllTags();
         }
     }

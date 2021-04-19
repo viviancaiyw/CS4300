@@ -26,7 +26,7 @@ def init_db():
 			name=info['name'],
 			genre=json.dumps(info['genre']),
 			content_rating=info['content_rating'],
-			audience_count=int(info['audience_count']),
+			audience_count=str(info['audience_count']),
 			desc_keywords=json.dumps(info['desc_keywords']),
 			review_keywords=json.dumps(info['review_keywords']),
 			review_keyphrases=json.dumps(info['review_keyphrases'])
@@ -46,7 +46,7 @@ def init_db():
 			tags=json.dumps(info['tags']),
 			genre=json.dumps(info['genre']),
 			num_players=json.dumps(info['num_players']),
-			rating=int(info['rating']),
+			rating=str(info['rating']),
 			mature_content=mature_content,
 			url=str(info['url']),
 			desc_keywords=json.dumps(info['desc_keywords'])
@@ -61,7 +61,7 @@ def drop_db():
 	db.session.remove()
 	db.drop_all()
 
-if __name__ == '__main__':
-	drop_db()
-	init_db()
+# if __name__ == '__main__':
+# 	drop_db()
+# 	init_db()
 

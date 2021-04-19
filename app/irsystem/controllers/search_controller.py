@@ -1,8 +1,9 @@
 # from flask_login import login_required
 
 from . import *
-
+from app.irsystem.controllers.get_input_lists import *
 from app.irsystem.controllers.tags_movie_match import *
+import json
 
 project_name = "Steamy Reviews: Game Recommendation Engine"
 net_id = "Chang Wei: cw887, Qichen Hu: qh75, Yuwen Cai: yc687, Yitian Lin: yl698"
@@ -10,30 +11,15 @@ net_id = "Chang Wei: cw887, Qichen Hu: qh75, Yuwen Cai: yc687, Yitian Lin: yl698
 
 @irsystem.route('/', methods=['GET'])
 def home():
-    return render_template('search.html')
+    return render_template('search.html', genresData=json.dumps(get_genre_list()), moviesData=json.dumps(get_movie_list()))
 
-@irsystem.route('/search', methods=['GET', 'POST'])
+@irsystem.route('/search', methods=['GET'])
 def search():
-    query = request.args.get('search')
-    if not query:
-        data = []
-        output_message = ''
-    else:
-        output_message = "Your search: " + query
-        data = range(5)
-    return render_template('search.html', name=project_name, netid=net_id,
-                           output_message=output_message, data=data)
+    return render_template('search.html', genresData=json.dumps(get_genre_list()), moviesData=json.dumps(get_movie_list()))
 
-@irsystem.route('/tags_movie_match', methods=['GET', 'POST'])
-def tags_match():
-    tags = request.json.get('tags', '')
-    movie = request.json.get('movie', '')
-    if not tags:
-        data = []
-        output_message = ''
-    else:
-        output_message = "Your tags: " + str(tags) + " Your movie: " + str(movie)
-        data = match_tags_and_movie(tags, movie)
-
-        print(data, flush=True)
-    return Response(json.dumps(data),  mimetype="application/json")
+@irsystem.route('/search-run', methods=['POST'])
+def search_action():
+    tags = json.loads(request.form.get('gameTags')) if request.form.get('gameTags') else []
+    movie = request.form.get('movieEnjoy') if request.form.get('movieEnjoy') else None
+    genres = json.loads(request.form.get('gameGenre')) if request.form.get('gameGenre') else []
+    return Response(str(match_tags_and_movie(tags, movie)))
