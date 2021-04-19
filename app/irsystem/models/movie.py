@@ -3,12 +3,12 @@ from app import db
 class Movie(db.Model):
 	__tablename__ = "movies"
 
-	link_id = db.Column(db.String(63), primary_key=True, nullable=False)
+	link_id = db.Column(db.String(127), primary_key=True, nullable=False)
 
 	name = db.Column(db.String(255))
 	genre = db.Column(db.Text)
 	content_rating = db.Column(db.String(31))
-	audience_count = db.Column(db.Integer)
+	audience_count = db.Column(db.String(31))
 	desc_keywords = db.Column(db.Text)
 	review_keywords = db.Column(db.Text)
 	review_keyphrases = db.Column(db.Text)
