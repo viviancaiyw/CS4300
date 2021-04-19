@@ -25,6 +25,6 @@ def search_action():
     genres = json.loads(request.form.get('gameGenre')) if request.form.get('gameGenre') else [] # TODO: add it to response
     response_body = {
         "based on keywords": str(match_tags_and_movie(tags, movie)),
-        "based on titles": str(get_top_games_from_title(movie))
+        "based on titles": str(get_top_games_from_title_v2(movie))
     }
     return Response(json.dumps(response_body))
