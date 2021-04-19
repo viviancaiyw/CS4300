@@ -15,7 +15,7 @@ def home():
 
 @irsystem.route('/search', methods=['GET'])
 def search():
-    return render_template('search.html', genresData=json.dumps(get_genre_list()), moviesData=json.dumps(get_movie_list()))
+    return redirect(url_for('irsystem.home'))
 
 @irsystem.route('/search-run', methods=['POST'])
 def search_action():
