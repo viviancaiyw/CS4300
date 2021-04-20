@@ -65,6 +65,11 @@ def _clean_tag(tag):
 		(tag,pos) = nltk.pos_tag([tag])[0]
 		if pos != 'NN' and pos != 'JJ':
 			pos = 'n'
+		elif pos == 'NN':
+			pos = 'n'
+		else:
+			pos = 'j'
+
 		tag = lemmatizer.lemmatize(tag, pos)
 
 	return tag
@@ -433,6 +438,7 @@ def _get_game_list_with_info(res):
 		tag_matchs = item['tags_match']
 		info = {
 				'app_id': app_id,
+				'name': GAME_INFO[app_id]['name'],
 				'developer': GAME_INFO[app_id]['developer'],
 				'publisher': GAME_INFO[app_id]['publisher'],
 				'num_players': GAME_INFO[app_id]['num_players'],
