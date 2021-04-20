@@ -4,11 +4,13 @@ monkey.patch_all()
 
 # Imports
 import os
+import json
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from flask_migrate import Migrate
 from flask_login import LoginManager
+
 
 # Configure app
 socketio = SocketIO()
@@ -35,7 +37,7 @@ socketio.init_app(app)
 
 # modules import
 # route / User
-from app.utilities import routes
+# from app.utilities import routes
 from app.accounts.models.user import User
 
 # HTTP error handling
