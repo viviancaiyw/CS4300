@@ -58,13 +58,18 @@ def _clean_syns(syns):
 Clean a tag.
 '''
 def _clean_tag(tag):
+	if isinstance(tag, dict):
+		tag = tag['value']
 	tag = _clean_str(tag)
 
 	# Lemmatize tag with a single word
 	if len(tag.split(' '))==1:
 		(tag,pos) = nltk.pos_tag([tag])[0]
-		if pos != 'NN' and pos != 'JJ':
+		if pos[:2]=='JJ':
+			pos = 'a'
+		else:
 			pos = 'n'
+
 		tag = lemmatizer.lemmatize(tag, pos)
 
 	return tag
@@ -125,9 +130,13 @@ def _get_syns(word):
 Get a list of derived adjs for the given word if the word is a noun.
 '''
 def _get_derived(word, pos):
+	if pos!='n' or pos!='a':
+		pos = 'n'
+
 	derived = set()
 
 	synsets = wn.synsets(word, pos=pos)
+	print('here '+pos, flush=True)
 
 	# Only get derived words for a noun.
 	if pos=='n':
@@ -263,7 +272,7 @@ def _match_games_using_keywords(tags, appid_to_vec, common_keywords_keyphrases):
 	res = list(map(lambda x: 
 						(x['app_id'], _get_sim_res(vector, x['vector'], norm, x['norm'], addedword_to_originalwords)), 
 					appid_to_vec.values()))
-	res = list(filter(lambda x: x[1][0]!=0, res))
+
 	res = sorted(res, key=lambda x:(-x[1][0], -len(x[1][1]), x[0]))
 
 	return res
@@ -360,8 +369,8 @@ def _merge_keyword_keyphrase_match_results(keyword_matchs, keyphrase_matchs):
 
 		res[app_id] = (score, tag_matchs)
 
-	res = list(filter(lambda x: len(x[1][1])!=0, res.items()))
-	res = sorted(res, key=lambda x: (-len(x[1][1]), -x[1][0], x[0]))
+	# res = list(filter(lambda x: len(x[1][1])!=0, res.items()))
+	res = sorted(res.items(), key=lambda x: (-len(x[1][1]), -x[1][0], x[0]))
 	res = [(k, list(v[1])) for (k,v) in res]
 
 	return res
@@ -433,12 +442,16 @@ def _get_game_list_with_info(res):
 		tag_matchs = item['tags_match']
 		info = {
 				'app_id': app_id,
+				'name': GAME_INFO[app_id]['name'],
 				'developer': GAME_INFO[app_id]['developer'],
 				'publisher': GAME_INFO[app_id]['publisher'],
 				'num_players': GAME_INFO[app_id]['num_players'],
 				'rating': GAME_INFO[app_id]['rating'],
 				'url': GAME_INFO[app_id]['url'],
-				'tag_matchs': tag_matchs
+				'tag_matchs': tag_matchs,
+				'num_movie_keyword_matchs': item['num_movie_keyword_match'],
+				'tags_rank': item['tags_rank'],
+				'movie_rank': item['movie_rank']
 				}
 		lst.append(info)
 	return lst
@@ -489,7 +502,7 @@ def match_tags_and_movie(input_tags, movielink):
 	combined = _merge_two_results(res, movie_res, 0.9, 0.1)
 	print(time.time()-start)
 
-	combined =  combined[:20]
+	combined =  combined[:10]
 	# print(combined)
 
 	return _get_game_list_with_info(combined)
