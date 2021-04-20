@@ -67,6 +67,7 @@ def _clean_tag(tag):
 			pos = 'a'
 		else:
 			pos = 'n'
+
 		tag = lemmatizer.lemmatize(tag, pos)
 
 	return tag

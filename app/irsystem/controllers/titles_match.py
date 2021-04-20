@@ -8,7 +8,9 @@ def get_top_games_from_title(mov_tmt_path: str, threshold=0.25) -> List[Dict]:
     Given a movie's rotten tomato's path `mov_tmt_path`, return a map of all
     top similar movies i.e. similar score between titles > `threshold`
     """
-    ranking_info = MOVIE_GAME_TITLE_SIMILARITY[mov_tmt_path]
+    if not mov_tmt_path:
+        return []
+    ranking_info = MOVIE_GAME_TITLE_SIMILARITY.get(mov_tmt_path, [])
     res = []
     print("titles rankings: " + str(ranking_info))
     for app_id, score in ranking_info.items():
