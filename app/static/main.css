@@ -4,7 +4,7 @@
 }
 
 body {
-    background: url('../static/images/background.png') no-repeat center center fixed;
+    background: url('https://i.imgur.com/bXGd4TW.png') no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
@@ -21,7 +21,7 @@ body {
 }
 
 .placeholder {
-    height: 2.5rem;
+    height: 3.5rem;
 }
 
 .precision-placeholder {
