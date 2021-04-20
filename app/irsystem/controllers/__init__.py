@@ -9,7 +9,7 @@ from functools import wraps
 from werkzeug import check_password_hash, generate_password_hash 
 
 # Import the db object from main app module
-from app import db 
+from app import db, irsystem
 
 # Marshmallow 
 from marshmallow import ValidationError

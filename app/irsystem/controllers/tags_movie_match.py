@@ -59,7 +59,7 @@ def _clean_tag(tag):
 	# Lemmatize tag with a single word
 	if len(tag.split(' '))==1:
 		(tag,pos) = nltk.pos_tag([tag])[0]
-		if pos != 'n' and pos != 'a':
+		if pos != 'NN' and pos != 'JJ':
 			pos = 'n'
 		tag = lemmatizer.lemmatize(tag, pos)
 
@@ -164,8 +164,8 @@ def _get_keyword_match_wordvector(tag_words, common_keywords_keyphrases, addedwo
 
 	# Adjust weight based on word pos 
 	# and whether it's the original word given by the user
-	for word in set(tag_words):
-		(word,pos) = nltk.pos_tag([word])[0]
+	for word in set(allwords):
+		(w,pos) = nltk.pos_tag([word])[0]
 
 		# If it's an extracted common keyword, put more weight.
 		if word in common_keywords_keyphrases:
@@ -183,20 +183,18 @@ def _get_keyword_match_wordvector(tag_words, common_keywords_keyphrases, addedwo
 			else:
 				weight[word] = weight[word]*1.5
 			pos = 'a'
-		else:
-			continue
 
+		# Adjust weight for derived words for the original input
+		if word in tag_words:
+			derived = _get_derived(word, pos)
 
-	# Adjust weight for derived words.
-	derived = _get_derived(word, pos)
+			for dv in derived:
+				if dv not in weight.keys():
+					weight[dv] = weight[word]*0.9
 
-	for dv in derived:
-		if dv not in weight.keys():
-			weight[dv] = weight[word]*0.9
-
-		lst = addedword_to_originalwords.get(dv, list())
-		lst.append(dv)
-		addedword_to_originalwords[dv] = lst
+				lst = addedword_to_originalwords.get(dv, list())
+				lst.append(word)
+				addedword_to_originalwords[dv] = lst
 
 	vector = np.array(list(weight.values()))
 	squared = vector ** 2
@@ -210,7 +208,7 @@ Compute cosine similarity between two dictionaries.
 '''
 def _cos_sim(d1, d2, norm1, norm2):
 	intersect = set(d1.keys()).intersection(set(d2.keys()))
-	score = sum(d1[k]*d2[k] for k in intersect)
+	score = sum(d1[k]*d2[k] for k in intersect) / (norm1 * norm2)
 	return (score, intersect)
 
 '''

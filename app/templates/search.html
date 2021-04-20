@@ -13,35 +13,57 @@
                 <div class="card-body">
                     <div class="row justify-content-md-center">
                         <div class="col-11">
-                            <form id="search-form">
+                            <form id="search-form" action="" method="post" novalidate>
+                                {{ form.hidden_tag() }}
                                 <div class="row search-card-row">
                                     <div class="col-2">
                                         <span><strong>PLAYERS: </strong></span>
                                     </div>
-
+                                    {% set icons=['bi bi-person-fill text-primary', 'bi bi-people-fill text-primary',
+                                            'bi bi-check-all text-primary'] %}
+                                    {% for subfield in form.players %}
                                     <div class="col-3">
-                                        <input class="form-check-input" type="checkbox" name="playerType"
-                                            id="playerTypeSingle">
-                                        <label class="form-check-label" for="playerTypeSingle">
-                                            <i class="bi bi-person-fill text-primary"></i> single-player
-                                        </label>
+                                        {{ subfield(class="form-check-input") }}
+                                        {{ subfield.label(class="form-check-label") }}
+                                        <i class="{{ icons[loop.index0] }}"></i>
                                     </div>
-                                    <div class="col-3">
-                                        <input class="form-check-input" type="checkbox" name="playerType"
-                                            id="playerTypeMulti">
-                                        <label class="form-check-label" for="playerTypeMulti">
-                                            <i class="bi bi-people-fill text-primary"></i> multi-player
-                                        </label>
-                                    </div>
+                                    {% endfor %}
+                                    {% for error in form.players.errors %}
+                                        <div class="col-6 align-self-center" style="color:red">{{ [error] }}</div>
+                                    {% endfor %}
                                 </div>
+
+{#                                    <div class="col-3">#}
+{#                                        <input class="form-check-input" type="radio" name="playerType"#}
+{#                                            id="playerTypeSingle" value="single">#}
+{#                                        <label class="form-check-label" for="playerTypeSingle">#}
+{#                                            <i class="bi bi-person-fill text-primary"></i> single-player#}
+{#                                        </label>#}
+{#                                    </div>#}
+{#                                    <div class="col-3">#}
+{#                                        <input class="form-check-input" type="radio" name="playerType"#}
+{#                                            id="playerTypeMulti" value="multi">#}
+{#                                        <label class="form-check-label" for="playerTypeMulti">#}
+{#                                            <i class="bi bi-people-fill text-primary"></i> multi-player#}
+{#                                        </label>#}
+{#                                    </div>#}
+{#                                    <div class="col-3">#}
+{#                                        <input class="form-check-input" type="radio" name="playerType"#}
+{#                                            id="playerTypeBoth" value="both">#}
+{#                                        <label class="form-check-label" for="playerTypeBoth">#}
+{#                                            <i class="bi bi-check-all text-primary"></i> Both#}
+{#                                        </label>#}
+{#                                    </div>#}
+
 
                                 <div class="row search-card-row">
                                     <div class="col-2">
                                         <span><i class="bi bi-ui-checks"></i> <strong>GENRE: </strong></span>
                                     </div>
                                     <div class="col-10">
-                                        <input class="search-tag-input" id="gameGenre" name="gameGenre"
-                                            aria-describedby="genreHelp">
+                                        {{ form.genres(class="search-tag-input")}}
+{#                                        <input class="search-tag-input" id="gameGenre" name="gameGenre"#}
+{#                                            aria-describedby="genreHelp">#}
                                         <small id="genreHelp" class="form-text text-muted">Enter <b>game</b> genres you
                                             are interested in</small>
                                     </div>
@@ -70,11 +92,15 @@
 
                                 <div class="row">
                                     <div class="col-2">
-                                        <label for="moviesEnjoy" class="form-label"><i
+                                        <label for="movies" class="form-label"><i
                                                 class="bi bi-tv text-primary"></i> Movie</label>
                                     </div>
                                     <div class="col-10">
-                                        <input class="search-tag-input" id="movieEnjoy" name="movieEnjoy">
+                                        {{ form.movie(class="search-tag-input") }}
+{#                                        <input class="search-tag-input" id="movieEnjoy" name="movieEnjoy">#}
+                                        {% for error in form.movie.errors %}
+                                            <span style="color:red">{{ [error] }}</span>
+                                        {% endfor %}
                                     </div>
                                 </div>
 
@@ -96,7 +122,7 @@
                                     <div class="col-2">
                                     </div>
                                     <div class="col-10">
-                                        <small class="form-text text-muted">We will recommend you games based on
+                                        <small class="form-text text-muted"><b>We will recommend you games based on
                                             books/movies/games you already enjoy.</b></small>
                                     </div>
                                 </div>
@@ -106,14 +132,20 @@
                                         <strong><i class="bi bi-tags-fill"></i> TAGS: </strong></span>
                                     </div>
                                     <div class="col-10">
-                                        <input class="search-tag-input" name="gameTags" id="gameTags"
-                                            aria-describedby="tagHelp">
+{#                                        <input class="search-tag-input" name="gameTags" id="gameTags"#}
+{#                                            aria-describedby="tagHelp">#}
+                                        {{ form.tags(class="search-tag-input") }}
                                         <small id="tagHelp" class="form-text text-muted">Enter other random traits you
                                             want your game to have. <b>Supports up to tags with 5 words.</b></small>
+                                        {% for error in form.tags.errors %}
+                                            <span style="color:red">{{ [error] }}</span>
+                                        {% endfor %}
+
                                     </div>
                                 </div>
+                                {{ form.submit(class="btn btn-info") }}
 
-                                <button type="submit" class="btn btn-primary">Submit</button>
+{#                                <button type="submit" class="btn btn-primary">Submit</button>#}
 
                             </form>
                         </div>
@@ -126,22 +158,22 @@
 </div>
 
 <!-- <form class="form-inline global-search">
-    {% if data %}
-        <h1>{{output_message}}</h1>
-        {% for d in data %}
-            <br>
-            <p>{{d}}</p>
-        {% endfor %}
-    {% endif %}
+{#    {% if data %}#}
+{#        <h1>{{output_message}}</h1>#}
+{#        {% for d in data %}#}
+{#            <br>#}
+{#            <p>{{d}}</p>#}
+{#        {% endfor %}#}
+{#    {% endif %}#}
     </form> -->
 {% endblock %}
 
 {% block script %}
 <script>
-    $('#search-form').submit(false);
+    {#$('#search-form').submit(false);#}
 
-    let genres = ['adventure', 'action', 'arena', 'moba', 'real-time-strategy'];
-    let genreInput = document.querySelector('input[id=gameGenre]');
+    let genres = {{ genres | tojson }};
+    let genreInput = document.querySelector('input[id=genres]');
     let genreTagify = new Tagify(genreInput, {
         enforceWhitelist: true,
         whitelist: genres,
@@ -160,8 +192,8 @@
         }
     });
 
-    let movies = ['Harry Potter', 'Forest Gump', 'Star Wars', 'Avengers', 'A Very Long Movie Name'];
-    let movieInput = document.querySelector('input[id=movieEnjoy]');
+    let movies = {{ mv_names | tojson }};
+    let movieInput = document.querySelector('input[id=movie]');
     let movieTagify = new Tagify(movieInput, {
         mode: 'select',
         whitelist: movies,
@@ -184,7 +216,7 @@
             movieTagify.removeAllTags();
         }
     }
-    let tagInput = document.querySelector('input[id=gameTags]');
+    let tagInput = document.querySelector('input[id=tags]');
     let tagTagify = new Tagify(tagInput, {
         pattern: /^(?:\b\w+\b[\s\r\n]*){1,5}$/,
         transformTag: transformTag,
