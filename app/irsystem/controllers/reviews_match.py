@@ -63,8 +63,11 @@ def _clean_tag(tag):
 	# Lemmatize tag with a single word
 	if len(tag.split(' '))==1:
 		(tag,pos) = nltk.pos_tag([tag])[0]
-		if pos != 'NN' and pos != 'JJ':
+		if pos[:2]=='JJ':
+			pos = 'a'
+		else:
 			pos = 'n'
+
 		tag = lemmatizer.lemmatize(tag, pos)
 
 	return tag
@@ -125,9 +128,13 @@ def _get_syns(word):
 Get a list of derived adjs for the given word if the word is a noun.
 '''
 def _get_derived(word, pos):
+	if pos!='n' or pos!='a':
+		pos = 'n'
+
 	derived = set()
 
 	synsets = wn.synsets(word, pos=pos)
+	print('here '+pos, flush=True)
 
 	# Only get derived words for a noun.
 	if pos=='n':
@@ -433,6 +440,7 @@ def _get_game_list_with_info(res):
 		tag_matchs = item['tags_match']
 		info = {
 				'app_id': app_id,
+				'name': GAME_INFO[app_id]['name'],
 				'developer': GAME_INFO[app_id]['developer'],
 				'publisher': GAME_INFO[app_id]['publisher'],
 				'num_players': GAME_INFO[app_id]['num_players'],
