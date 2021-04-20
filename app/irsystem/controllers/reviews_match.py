@@ -58,6 +58,8 @@ def _clean_syns(syns):
 Clean a tag.
 '''
 def _clean_tag(tag):
+	if isinstance(tag, dict):
+		tag = tag['value']
 	tag = _clean_str(tag)
 
 	# Lemmatize tag with a single word
