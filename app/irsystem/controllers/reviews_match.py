@@ -63,7 +63,9 @@ def _clean_tag(tag):
 	# Lemmatize tag with a single word
 	if len(tag.split(' '))==1:
 		(tag,pos) = nltk.pos_tag([tag])[0]
-		if pos != 'n' and pos != 'a':
+		if pos[:2]=='JJ':
+			pos = 'a'
+		else:
 			pos = 'n'
 		tag = lemmatizer.lemmatize(tag, pos)
 
@@ -125,9 +127,13 @@ def _get_syns(word):
 Get a list of derived adjs for the given word if the word is a noun.
 '''
 def _get_derived(word, pos):
+	if pos!='n' or pos!='a':
+		pos = 'n'
+
 	derived = set()
 
 	synsets = wn.synsets(word, pos=pos)
+	print('here '+pos, flush=True)
 
 	# Only get derived words for a noun.
 	if pos=='n':
