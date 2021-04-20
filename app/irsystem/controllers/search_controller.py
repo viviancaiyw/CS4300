@@ -1,60 +1,35 @@
 # from flask_login import login_required
 
 from . import *
-import json
-from app.utilities.search_form import search_form
-from app.irsystem.controllers.tags_movie_match import *
-from flask import render_template, flash, redirect, url_for, request
 
-from app.utilities.import_datasets import movie_names, game_genres
+from app.irsystem.controllers.get_info import *
+from app.irsystem.controllers.reviews_match import *
+from app.irsystem.controllers.titles_match import *
+
+import json
+import resource
 
 project_name = "Steamy Reviews: Game Recommendation Engine"
 net_id = "Chang Wei: cw887, Qichen Hu: qh75, Yuwen Cai: yc687, Yitian Lin: yl698"
 
 
-
-@irsystem.route('/', methods=['GET', 'POST'])
+@irsystem.route('/', methods=['GET'])
 def home():
-    form = search_form()
-    if request.method == 'POST':
-        if form.validate_on_submit():
+    return render_template('search.html', genresData=json.dumps(get_genre_list()), moviesData=json.dumps(get_movie_list()))
 
-            # TODO
+@irsystem.route('/search', methods=['GET'])
+def search():
+    return redirect(url_for('irsystem.home'))
 
-            return render_template('result.html', form=form)
-    return render_template('search.html', form=form, genres=game_genres, mv_names=movie_names)
-
-# @irsystem.route('/result', methods=['GET', 'POST'])
-# def result(form):
-#     return render_template('result.html', form=form)
-# @irsystem.route('/search', methods=['GET', 'POST'])
-# def search():
-#     form = search_form()
-#     if form.validate_on_submit():
-#
-#
-#         pass
-#     render_template(url_for('home'), form=form)
-    # query = request.args.get('search')
-    # if not query:
-    #     data = []
-    #     output_message = ''
-    # else:
-    #     output_message = "Your search: " + query
-    #     data = range(5)
-    # return render_template('search.html', name=project_name, netid=net_id,
-    #                        output_message=output_message, data=data)
-
-@irsystem.route('/tags_movie_match', methods=['GET', 'POST'])
-def tags_match():
-    tags = request.json.get('tags', '')
-    movie = request.json.get('movie', '')
-    if not tags:
-        data = []
-        output_message = ''
-    else:
-        output_message = "Your tags: " + str(tags) + " Your movie: " + str(movie)
-        data = match_tags_and_movie(tags, movie)
-
-        print(data, flush=True)
-    return Response(json.dumps(data),  mimetype="application/json")
+@irsystem.route('/search-run', methods=['POST'])
+def search_action():
+    mac_memory_in_MB = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / (2**20)
+    print(mac_memory_in_MB, flush=True)
+    tags = json.loads(request.form.get('gameTags')) if request.form.get('gameTags') else []
+    movie = request.form.get('movieEnjoy') if request.form.get('movieEnjoy') else None
+    genres = json.loads(request.form.get('gameGenre')) if request.form.get('gameGenre') else [] # TODO: add it to response
+    response_body = {
+        "based on keywords": str(match_tags_and_movie(tags, movie)),
+        "based on titles": str(get_top_games_from_title(movie))
+    }
+    return Response(json.dumps(response_body))

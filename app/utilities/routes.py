@@ -6,10 +6,10 @@ from app.accounts.models.user import User
 from app.utilities.reg_form import RegForm
 from werkzeug.urls import url_parse
 
-# @app.route('/')
-# @app.route('/index')
-# def index():
-#     return render_template('index.html')
+
+@app.route('/index')
+def index():
+    return redirect(url_for('irsystem.home'))
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
