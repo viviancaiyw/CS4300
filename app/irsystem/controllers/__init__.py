@@ -32,7 +32,8 @@ import os
 
 from app.irsystem.models import DATA_DIR
 
-MOVIE_INFO_FILENAME = 'movie_info.json'
+# For now use movie_info2, which doesn't have desc_keywords
+MOVIE_INFO_FILENAME = 'movie_info2.json'
 GAME_INFO_FILENAME = 'game_info.json'
 
 G_REV_COMMON_KEYWORDS_PHRASES_FILENAME = 'common_keywords_phrases.json'
