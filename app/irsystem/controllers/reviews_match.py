@@ -136,7 +136,6 @@ def _get_derived(word, pos):
 	derived = set()
 
 	synsets = wn.synsets(word, pos=pos)
-	print('here '+pos, flush=True)
 
 	# Only get derived words for a noun.
 	if pos=='n':
@@ -225,7 +224,7 @@ Compute cosine similarity between two dictionaries.
 '''
 def _cos_sim(d1, d2, norm1, norm2):
 	intersect = set(d1.keys()).intersection(set(d2.keys()))
-	score = sum(d1[k]*d2[k] for k in intersect) / (norm1 * norm2)
+	score = sum(d1[k]*d2[k] for k in intersect) / (norm1 * norm2 + 1)
 	return (score, intersect)
 
 '''
@@ -419,14 +418,14 @@ def _merge_two_results(tags_match, movie_match, tags_weight, movie_weight):
 		return score
 
 	allgames = set(tags_d.keys()).union(set(movie_d.keys()))
-	print(movie_match, flush=True)
+
 	res = []
 	for app_id in allgames:
 		info = {}
 		info['app_id'] = app_id
 		info['score'] = _compute_score_for_one_game(app_id)
 		info['tags_match'] = tags_d[app_id][1] if app_id in tags_d else []
-		info['num_movie_keyword_match'] = len(movie_d[app_id][1]) if app_id in movie_d else 0
+		info['num_movie_keyword_match'] = movie_d[app_id][1] if app_id in movie_d else 0
 		info['tags_rank'] = tags_d[app_id][0] if app_id in tags_d else -1
 		info['movie_rank'] = movie_d[app_id][0] if app_id in movie_d else -1
 		res.append(info)
@@ -470,40 +469,22 @@ def match_tags_and_movie(input_tags, movielink):
 	# Match with tags
 	if len(tags)!=0:
 		keyword_matchs = _match_games_using_keywords(tags, G_REV_KEYWORD_VEC, G_REV_COMMON_KEYWORDS_PHRASES)
+
 		keyphrase_matchs = _match_games_using_keyphrases(tags, G_REV_KEYWORD_VEC, G_REV_COMMON_KEYWORDS_PHRASES, G_REV_WORD_TO_SYNPHRASES, G_REV_INV_KEYWORDS_PHRASES)
 
 		res = _merge_keyword_keyphrase_match_results(keyword_matchs, keyphrase_matchs)
 	else:
 		res = []
 
+
 	# Now match with movie
-	# USE_DB = False
-	# if USE_DB:
-	# 	movie_info = Movie.query.filter_by(link_id=movielink).one()
-	# 	movie_tags = [word for word in json.loads(movie_info.review_keywords)]
-	# 	movie_tags.extend([phrase for phrase in json.loads(movie_info.review_keyphrases)])
-	# else:
 	if movielink is not None:
-		movie_info = MOVIE_INFO[movielink]
-		movie_tags = [word for word in movie_info['review_keywords']]
-		movie_tags.extend([phrase for phrase in movie_info['review_keyphrases']])
-
-		filtered_appids = [x[0] for x in res]
-		filtered_appid_to_vec = dict(filter(lambda x: x[1]['app_id'] in filtered_appids, G_REV_KEYWORD_VEC.items()))
-
-
-		movie_keyword_matchs = _match_games_using_keywords(movie_tags, filtered_appid_to_vec, G_REV_COMMON_KEYWORDS_PHRASES)
-		movie_keyphrase_matchs = _match_games_using_keyphrases(movie_tags, filtered_appid_to_vec, G_REV_COMMON_KEYWORDS_PHRASES, G_REV_WORD_TO_SYNPHRASES, G_REV_INV_KEYWORDS_PHRASES)
-
-		movie_res = _merge_keyword_keyphrase_match_results(movie_keyword_matchs, movie_keyphrase_matchs)
+		movie_res = MOVIE_INFO[movielink]['games']
 	else:
 		movie_res = []
-
 	combined = _merge_two_results(res, movie_res, 0.9, 0.1)
-	print(time.time()-start)
 
 	combined =  combined[:10]
-	# print(combined)
 
 	return _get_game_list_with_info(combined)
 
