@@ -3,7 +3,7 @@ from typing import List, Dict
 from app.irsystem.controllers import MOVIE_GAME_TITLE_SIMILARITY, GAME_INFO
 
 
-def get_top_games_from_title(mov_tmt_path: str, threshold=0.25) -> List[Dict]:
+def get_top_games_from_title(mov_tmt_path: str, threshold=0.5) -> List[Dict]:
     """
     Given a movie's rotten tomato's path `mov_tmt_path`, return a map of all
     top similar movies i.e. similar score between titles > `threshold`

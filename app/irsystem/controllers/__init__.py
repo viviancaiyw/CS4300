@@ -46,7 +46,6 @@ G_REV_WORD_TO_SYNPHRASES_FILENAME = 'game_rev_word_to_synphrase.json'
 MOVIE_NAME_FILENAME = 'movie_titles.json'
 G_GENRE_FILENAME = 'genre_list.json'
 MOVIE_GAME_TITLE_SIMILARITY_FILENAME = 'movie_game_title_similarity.json'
-MOVIE_FILTERED_TITLE_MAP_FILENAME = 'movie_filtered_title_map.json'
 
 
 with open(os.path.join(DATA_DIR, G_REV_COMMON_KEYWORDS_PHRASES_FILENAME), 'r', encoding='utf8') as in_json_file:
