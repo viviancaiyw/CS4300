@@ -32,8 +32,10 @@ import os
 
 from app.irsystem.models import DATA_DIR
 
+# import resource
+
 # For now use movie_info2, which doesn't have desc_keywords
-MOVIE_INFO_FILENAME = 'movie_info2.json'
+MOVIE_INFO_FILENAME = 'movie_info.json'
 GAME_INFO_FILENAME = 'game_info.json'
 
 G_REV_COMMON_KEYWORDS_PHRASES_FILENAME = 'common_keywords_phrases.json'
@@ -44,7 +46,6 @@ G_REV_WORD_TO_SYNPHRASES_FILENAME = 'game_rev_word_to_synphrase.json'
 MOVIE_NAME_FILENAME = 'movie_titles.json'
 G_GENRE_FILENAME = 'genre_list.json'
 MOVIE_GAME_TITLE_SIMILARITY_FILENAME = 'movie_game_title_similarity.json'
-MOVIE_FILTERED_TITLE_MAP_FILENAME = 'movie_filtered_title_map.json'
 
 
 with open(os.path.join(DATA_DIR, G_REV_COMMON_KEYWORDS_PHRASES_FILENAME), 'r', encoding='utf8') as in_json_file:
@@ -56,14 +57,20 @@ with open(os.path.join(DATA_DIR, G_REV_INV_KEYWORDS_PHRASES_FILENAME), 'r', enco
 with open(os.path.join(DATA_DIR, G_REV_KEYWORD_VEC_FILENAME), 'r', encoding='utf8') as in_json_file:
 	G_REV_KEYWORD_VEC = json.load(in_json_file)
 
+# mac_memory_in_MB = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / (2**20)
 with open(os.path.join(DATA_DIR, G_REV_WORD_TO_SYNPHRASES_FILENAME), 'r', encoding='utf8') as in_json_file:
 	G_REV_WORD_TO_SYNPHRASES = json.load(in_json_file)
+# print(mac_memory_in_MB, flush=True)
 
+# mac_memory_in_MB = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / (2**20)
 with open(os.path.join(DATA_DIR, MOVIE_INFO_FILENAME), 'r', encoding='utf8') as in_json_file:
 	MOVIE_INFO = json.load(in_json_file)
+# print(mac_memory_in_MB, flush=True)
 
+# mac_memory_in_MB = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / (2**20)
 with open(os.path.join(DATA_DIR, GAME_INFO_FILENAME), 'r', encoding='utf8') as in_json_file:
 	GAME_INFO = json.load(in_json_file)
+# print(mac_memory_in_MB, flush=True)
 
 with open(os.path.join(DATA_DIR, MOVIE_NAME_FILENAME), 'r', encoding='utf8') as in_json_file:
 	MOVIE_TITLES = json.load(in_json_file)
@@ -74,8 +81,8 @@ with open(os.path.join(DATA_DIR, G_GENRE_FILENAME), 'r', encoding='utf8') as in_
 with open(os.path.join(DATA_DIR, MOVIE_GAME_TITLE_SIMILARITY_FILENAME), 'r', encoding='utf8') as in_json_file:
 	MOVIE_GAME_TITLE_SIMILARITY = json.load(in_json_file)
 
-with open(os.path.join(DATA_DIR, MOVIE_FILTERED_TITLE_MAP_FILENAME), 'r', encoding='utf8') as in_json_file:
-	MOVIE_FILTERED_TITLE_MAP = json.load(in_json_file)
+# mac_memory_in_MB = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / (2**20)
+# print(mac_memory_in_MB, flush=True)
 
 
 

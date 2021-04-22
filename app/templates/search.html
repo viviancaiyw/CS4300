@@ -1,127 +1,125 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container">
-    <div class="row justify-content-md-center">
-        <div class="col-12">
-            <div class="placeholder"></div>
-            <div class="placeholder"></div>
-            <h1 class="display-2 text-white search-title">NEXTGAME</h1>
-            <p class="text-white-50 lead">&nbsp;Find your next favorite game via books/movies/games you enjoy. Apply
-                tags to further adjust to your quirks. <strong>Steam games only.</strong></p>
-            <div class="placeholder"></div>
-            <div class="card search-card">
-                <div class="card-body">
-                    <div class="row justify-content-md-center">
-                        <div class="col-11">
-                            <form id="search-form" action="/search-run" method="post" accept-charset="utf-8">
-                                <div class="row search-card-row">
-                                    <div class="col-2">
-                                        <span><strong>PLAYERS: </strong></span>
-                                    </div>
-
-                                    <div class="col-3">
-                                        <input class="form-check-input" type="checkbox" name="playerTypeSingle"
-                                            id="playerTypeSingle" checked>
-                                        <label class="form-check-label" for="playerTypeSingle">
-                                            <i class="bi bi-person-fill text-primary"></i> single-player
-                                        </label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input class="form-check-input" type="checkbox" name="playerTypeMulti"
-                                            id="playerTypeMulti" checked>
-                                        <label class="form-check-label" for="playerTypeMulti">
-                                            <i class="bi bi-people-fill text-primary"></i> multi-player
-                                        </label>
-                                    </div>
+<div class="row justify-content-md-center">
+    <div class="col-12">
+        <div class="placeholder"></div>
+        <h1 class="display-2 text-white search-title">NEXTGAME</h1>
+        <p class="text-white-50 lead">&nbsp;Find your next favorite game via books/movies/games you enjoy. Apply
+            tags to further adjust to your quirks. <strong>Steam games only.</strong></p>
+        <div class="placeholder"></div>
+        <div class="card search-card">
+            <div class="card-body">
+                <div class="row justify-content-md-center">
+                    <div class="col-10">
+                        <form id="search-form" action="/search-run" method="post" accept-charset="utf-8">
+                            <div class="row search-card-row">
+                                <div class="col-2">
+                                    <span><strong>PLAYERS: </strong></span>
                                 </div>
 
-                                <div class="row search-card-row">
-                                    <div class="col-2">
-                                        <span><i class="bi bi-ui-checks"></i> <strong>GENRE: </strong></span>
-                                    </div>
-                                    <div class="col-10">
-                                        <input class="search-tag-input" id="gameGenre" name="gameGenre"
-                                            aria-describedby="genreHelp">
-                                        <small id="genreHelp" class="form-text text-muted">Enter <b>game</b> genres you
-                                            are interested in</small>
-                                    </div>
+                                <div class="col-3">
+                                    <input class="form-check-input" type="checkbox" name="playerTypeSingle"
+                                        id="playerTypeSingle" checked>
+                                    <label class="form-check-label" for="playerTypeSingle">
+                                        <i class="bi bi-person-fill text-primary"></i> single-player
+                                    </label>
                                 </div>
-
-                                <div class="row">
-                                    <div class="col-auto">
-                                        <strong>PIECES YOU ENJOY: </strong></span>
-                                    </div>
+                                <div class="col-3">
+                                    <input class="form-check-input" type="checkbox" name="playerTypeMulti"
+                                        id="playerTypeMulti" checked>
+                                    <label class="form-check-label" for="playerTypeMulti">
+                                        <i class="bi bi-people-fill text-primary"></i> multi-player
+                                    </label>
                                 </div>
+                            </div>
 
-                                <div class="precision-placeholder"></div>
-
-                                <div class="row">
-                                    <div class="col-2">
-                                        <label for="booksEnjoy" class="form-label"><i
-                                                class="bi bi-book text-primary"></i> Book</label>
-                                    </div>
-                                    <div class="col-10">
-                                        <input type="text" disabled id="booksEnjoy" class="form-control"
-                                            placeholder="Not Supported Yet">
-                                    </div>
+                            <div class="row search-card-row">
+                                <div class="col-2">
+                                    <span><i class="bi bi-ui-checks"></i> <strong>GENRE: </strong></span>
                                 </div>
-
-                                <div class="precision-placeholder"></div>
-
-                                <div class="row">
-                                    <div class="col-2">
-                                        <label for="movieEnjoy" class="form-label"><i
-                                                class="bi bi-tv text-primary"></i> Movie</label>
-                                    </div>
-                                    <div class="col-10">
-                                        <input class="search-tag-input" id="movieEnjoy" name="movieEnjoy">
-                                    </div>
+                                <div class="col-10">
+                                    <input class="search-tag-input" id="gameGenre" name="gameGenre"
+                                        aria-describedby="genreHelp">
+                                    <small id="genreHelp" class="form-text text-muted">Enter <b>game</b> genres you
+                                        are interested in</small>
                                 </div>
+                            </div>
 
-                                <div class="precision-placeholder"></div>
-
-                                <div class="row">
-                                    <div class="col-2">
-                                        <label for="gamesEnjoy" class="form-label"><i
-                                                class="bi bi-suit-spade text-primary"></i> Game</label>
-                                    </div>
-                                    <div class="col-10">
-                                        <input type="text" disabled id="gamesEnjoy" class="form-control"
-                                            placeholder="Not Supported Yet">
-                                    </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <strong>PIECES YOU ENJOY: </strong></span>
                                 </div>
+                            </div>
 
+                            <div class="precision-placeholder"></div>
 
-                                <div class="row search-card-row">
-                                    <div class="col-2">
-                                    </div>
-                                    <div class="col-10">
-                                        <small class="form-text text-muted">We will recommend you games based on
-                                            books/movies/games you already enjoy.</b></small>
-                                    </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <label for="booksEnjoy" class="form-label"><i class="bi bi-book text-primary"></i>
+                                        Book</label>
                                 </div>
-
-                                <div class="row search-card-row">
-                                    <div class="col-2">
-                                        <strong><i class="bi bi-tags-fill"></i> TAGS: </strong></span>
-                                    </div>
-                                    <div class="col-10">
-                                        <input class="search-tag-input" name="gameTags" id="gameTags"
-                                            aria-describedby="tagHelp">
-                                        <small id="tagHelp" class="form-text text-muted">Enter other random traits you
-                                            want your game to have. <b>Supports up to tags with 5 words.</b></small>
-                                    </div>
+                                <div class="col-10">
+                                    <input type="text" disabled id="booksEnjoy" class="form-control"
+                                        placeholder="Not Supported Yet">
                                 </div>
+                            </div>
 
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                            <div class="precision-placeholder"></div>
 
-                            </form>
-                        </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <label for="movieEnjoy" class="form-label"><i class="bi bi-tv text-primary"></i>
+                                        Movie</label>
+                                </div>
+                                <div class="col-10">
+                                    <input class="search-tag-input" id="movieEnjoy" name="movieEnjoy">
+                                </div>
+                            </div>
+
+                            <div class="precision-placeholder"></div>
+
+                            <div class="row">
+                                <div class="col-2">
+                                    <label for="gamesEnjoy" class="form-label"><i
+                                            class="bi bi-suit-spade text-primary"></i> Game</label>
+                                </div>
+                                <div class="col-10">
+                                    <input type="text" disabled id="gamesEnjoy" class="form-control"
+                                        placeholder="Not Supported Yet">
+                                </div>
+                            </div>
+
+
+                            <div class="row search-card-row">
+                                <div class="col-2">
+                                </div>
+                                <div class="col-10">
+                                    <small class="form-text text-muted">We will recommend you games based on
+                                        books/movies/games you already enjoy.</b></small>
+                                </div>
+                            </div>
+
+                            <div class="row search-card-row">
+                                <div class="col-2">
+                                    <strong><i class="bi bi-tags-fill"></i> TAGS: </strong></span>
+                                </div>
+                                <div class="col-10">
+                                    <input class="search-tag-input" name="gameTags" id="gameTags"
+                                        aria-describedby="tagHelp">
+                                    <small id="tagHelp" class="form-text text-muted">Enter other random traits you
+                                        want your game to have. <b>Supports up to tags with 5 words.</b></small>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+
+                        </form>
                     </div>
-
                 </div>
+
             </div>
         </div>
+        <div class="placeholder"></div>
     </div>
 </div>
 
@@ -141,31 +139,31 @@
      * 'gameTags': [String] (list of tags)
      * }
      */
-    $('#search-form').submit(function(e) {
+    $('#search-form').submit(function (e) {
         $("#playerTypeSingle").val($('#playerTypeSingle').is(":checked"));
         $("#playerTypeMulti").val($('#playerTypeMulti').is(":checked"));
-        if($("#playerTypeMulti").val() === "false" && $("#playerTypeSingle").val() === "false") {
+        if ($("#playerTypeMulti").val() === "false" && $("#playerTypeSingle").val() === "false") {
             formIncompleteAlert("Check at least multiplayer or single player!");
             e.preventDefault();
             return;
         }
-        if($("#gameGenre").val() === "" && $("#movieEnjoy").val() === "" && $("#gameTags").val() === "") {
+        if ($("#gameGenre").val() === "" && $("#movieEnjoy").val() === "" && $("#gameTags").val() === "") {
             formIncompleteAlert("Please don't leave everything blank : (");
             e.preventDefault();
             return;
         }
-        if($("#gameGenre").val() !== "") {
+        if ($("#gameGenre").val() !== "") {
             $("#gameGenre").val(JSON.stringify(JSON.parse($("#gameGenre").val()).map(x => x.value)));
         }
-        if($("#movieEnjoy").val() !== "") {
+        if ($("#movieEnjoy").val() !== "") {
             $("#movieEnjoy").val(JSON.parse($("#movieEnjoy").val()).map(x => x.id)[0]);
         }
-        if($("#gameTags").val() !== "") {
+        if ($("#gameTags").val() !== "") {
             $("#gameTags").val(JSON.stringify(JSON.parse($("#gameTags").val()).map(x => x.value)));
-        }        
+        }
     });
 
-    function formIncompleteAlert(custom="") {
+    function formIncompleteAlert(custom = "") {
         alert("Please compelte the form before submitting!\n" + custom);
     }
 
@@ -190,8 +188,8 @@
         }
     });
 
-    let movies = JSON.parse($("#moviesData").val()).map(function(x){
-        return {value: x[0], id: x[1]};
+    let movies = JSON.parse($("#moviesData").val()).map(function (x) {
+        return { value: x[0], id: x[1] };
     });
     let movieInput = document.querySelector('input[id=movieEnjoy]');
     let movieTagify = new Tagify(movieInput, {
@@ -213,7 +211,7 @@
     });
     movieTagify.on('add', onMovieAdd);
     function onMovieAdd(e) {
-        if (! e.detail.data.hasOwnProperty('id')) {
+        if (!e.detail.data.hasOwnProperty('id')) {
             movieTagify.removeAllTags();
         }
     }
