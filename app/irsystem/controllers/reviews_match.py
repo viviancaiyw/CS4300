@@ -475,7 +475,8 @@ def match_tags_and_movie(input_tags, movielink):
 		res = _merge_keyword_keyphrase_match_results(keyword_matchs, keyphrase_matchs)
 	else:
 		res = []
-
+	print("Tag match time: "+str(time.time()-start), flush=True)
+	start = time.time()
 
 	# Now match with movie
 	if movielink is not None:
@@ -485,6 +486,7 @@ def match_tags_and_movie(input_tags, movielink):
 	combined = _merge_two_results(res, movie_res, 0.9, 0.1)
 
 	combined =  combined[:10]
+	print("Movie match time: "+str(time.time()-start), flush=True)
 
 	return _get_game_list_with_info(combined)
 
