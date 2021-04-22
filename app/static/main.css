@@ -11,21 +11,12 @@ body {
     -o-background-size: cover;
 }
 
-.footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    color: white;
-    text-align: center;
-}
-
 .placeholder {
-    height: 3.5rem;
+    height: 1.5rem;
 }
 
 .precision-placeholder {
-    height: 1rem;
+    height: 0.7rem;
 }
 
 .search-title {
