@@ -227,6 +227,18 @@ def _cos_sim(d1, d2, norm1, norm2):
 	score = sum(d1[k]*d2[k] for k in intersect) / (norm1 * norm2 + 1)
 	return (score, intersect)
 
+
+'''
+Get game tag score.
+'''
+def _get_game_tag_score(game_tags, tags):
+	game_tags = set(map(lambda x: _clean_str(x), game_tags))
+	tags = set(tags)
+	intersect = tags.intersection(game_tags)
+	score = len(intersect)*10
+	return (score, intersect)
+
+
 '''
 Get the original words from the added words.
 
@@ -249,9 +261,12 @@ def _match_games_using_keywords(tags, appid_to_vec, common_keywords_keyphrases):
 	if len(tags) == 0:
 		return []
 
-	def _get_sim_res(d1, d2, norm1, norm2, addedword_to_originalwords):
+	def _get_sim_res(d1, d2, norm1, norm2, game_tags, tags, addedword_to_originalwords):
 		(score, intersect) = _cos_sim(d1, d2, norm1, norm2)
+		(score2, intersect2) = _get_game_tag_score(game_tags, tags)
 		intersect = _change_addedword_to_originalword(intersect, addedword_to_originalwords)
+		score = score + score2
+		intersect.update(intersect2)
 		return (score, intersect)
 
 
@@ -269,7 +284,8 @@ def _match_games_using_keywords(tags, appid_to_vec, common_keywords_keyphrases):
 			addedword_to_originalwords.pop(word)
 
 	res = list(map(lambda x: 
-						(x['app_id'], _get_sim_res(vector, x['vector'], norm, x['norm'], addedword_to_originalwords)), 
+						(x['app_id'], _get_sim_res(vector, x['vector'], norm, x['norm'],
+						GAME_INFO[x['app_id']]['tags'], tags, addedword_to_originalwords)), 
 					appid_to_vec.values()))
 
 	res = sorted(res, key=lambda x:(-x[1][0], -len(x[1][1]), x[0]))
@@ -388,6 +404,8 @@ return: [{
 '''
 
 def _merge_two_results(tags_match, movie_match, tags_weight, movie_weight):
+	tags_match = tags_match[:50]
+	movie_match = movie_match[:50]
 	len_tags_match = len(tags_match)
 	len_movie_match = len(movie_match)
 
@@ -409,12 +427,15 @@ def _merge_two_results(tags_match, movie_match, tags_weight, movie_weight):
 
 		if app_id in movie_d:
 			movie_rank = movie_d[app_id][0]
+			num_movie_match_plus_one = (movie_d[app_id][1]) + 1
 		else:
 			movie_rank = len_movie_match
+			num_movie_match_plus_one = 1
 
 		tags_score = (1-tags_rank/(len_tags_match+1)) * num_tags_match_plus_one
-		movie_score = (1-movie_rank/(len_movie_match+1))
+		movie_score = (1-movie_rank/(len_movie_match+1)) * num_movie_match_plus_one
 		score = tags_weight*tags_score + movie_weight*movie_score
+		print((tags_score, movie_score), flush=True)
 		return score
 
 	allgames = set(tags_d.keys()).union(set(movie_d.keys()))
@@ -483,7 +504,7 @@ def match_tags_and_movie(input_tags, movielink):
 		movie_res = MOVIE_INFO[movielink]['games']
 	else:
 		movie_res = []
-	combined = _merge_two_results(res, movie_res, 0.9, 0.1)
+	combined = _merge_two_results(res, movie_res, 0.8, 0.2)
 
 	combined =  combined[:10]
 	print("Movie match time: "+str(time.time()-start), flush=True)
