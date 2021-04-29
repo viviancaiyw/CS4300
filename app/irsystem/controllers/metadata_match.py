@@ -30,12 +30,12 @@ def filter_games(singleplayer: bool, multiplayer: bool, raw_genre_list):
     # res_games = Game.query.filter(
     #     Game.single_player == singleplayer, Game.multi_player == multiplayer,
     #     (Game.genre.like('%action%')|Game.genre.like('%adventure%'))).limit(10)
-    res = []
-    for game in res_games:
-        game_info = {
-            'id': game.app_id,
-            'name': game.name,
-            'genre': game.genre
-        }
-        res.append(game_info)
+    res = [game.app_id for game in res_games]
+    # for game in res_games:
+    #     game_info = {
+    #         'id': game.app_id,
+    #         'name': game.name,
+    #         'genre': game.genre
+    #     }
+    #     res.append(game_info)
     return res
