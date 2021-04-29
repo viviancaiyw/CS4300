@@ -8,10 +8,11 @@ class Movie(db.Model):
     games = db.Column(db.Text)
     genre = db.Column(db.Text)
     desc_keywords = db.Column(db.Text)
+    vector_pca = db.Column(db.Text)
 
-    def __init__(self, link_id: str, games: [], genre: [], desc_keywords: []):
+    def __init__(self, link_id: str, games: [], genre: [], desc_keywords: [], vector_pca: []):
         db.Model.__init__(self, link_id=link_id, games=games,
-                          genre=genre, desc_keywords=desc_keywords)
+                          genre=genre, desc_keywords=desc_keywords, vector_pca=vector_pca)
 
     def __repr__(self):
         return "<Movie %s: %r>" % (self.link_id, self.name)

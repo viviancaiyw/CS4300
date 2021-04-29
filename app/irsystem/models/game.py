@@ -17,14 +17,15 @@ class Game(db.Model):
     mature_content = db.Column(db.Boolean)
     url = db.Column(db.String(255))
     desc_keywords = db.Column(db.Text)
+    vector_pca = db.Column(db.Text)
 
     def __init__(self, app_id: str, name: str, developer: [], publisher: [],
                  tags: [], genre: [], single_player: bool, multi_player: bool,
                  rating: int, mature_content: bool,
-                 url: str, desc_keywords: []):
+                 url: str, desc_keywords: [], vector_pca: []):
         db.Model.__init__(self, app_id=app_id, name=name, developer=developer,
                           publisher=publisher, tags=tags, genre=genre, single_player=single_player, multi_player=multi_player,
-                          rating=rating, mature_content=mature_content, url=url, desc_keywords=desc_keywords)
+                          rating=rating, mature_content=mature_content, url=url, desc_keywords=desc_keywords, vector_pca=vector_pca)
 
     def __repr__(self):
         return "<Game %s: %r>" % (self.app_id, self.name)
