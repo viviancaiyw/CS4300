@@ -11,3 +11,5 @@ vagrant/a4keypair.pem
 data/reviews/data
 data/reviews/info
 data/reviews/movie_info
+data/description
+.env
