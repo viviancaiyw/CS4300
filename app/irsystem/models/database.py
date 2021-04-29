@@ -21,18 +21,14 @@ def init_db():
     with open(os.path.join(DATA_DIR, GAME_INFO_FILENAME), "r") as in_json_file:
         game_info = json.load(in_json_file)
 
-    # print("Dump movie data...")
-    # for (link, info) in movie_info.items():
-    #     db.session.add(Movie(
-    #         link_id=str(link),
-    #         name=info['name'],
-    #         genre=json.dumps(info['genre']),
-    #         content_rating=info['content_rating'],
-    #         audience_count=str(info['audience_count']),
-    #         desc_keywords=json.dumps(info['desc_keywords']),
-    #         review_keywords=json.dumps(info['review_keywords']),
-    #         review_keyphrases=json.dumps(info['review_keyphrases'])
-    #     ))
+    print("Dump movie data...")
+    for (link, info) in movie_info.items():
+        db.session.add(Movie(
+            link_id=str(link),
+            games=json.dumps(info['games']),
+            genre=json.dumps(info['genre']),
+            desc_keywords=json.dumps(info['desc_keywords'])
+        ))
 
     print("Dump game data...")
     for (appid, info) in game_info.items():
