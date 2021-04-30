@@ -13,3 +13,4 @@ data/reviews/info
 data/reviews/movie_info
 data/description
 .env
+app/data/pca_svd

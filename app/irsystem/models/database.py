@@ -1,19 +1,21 @@
-import os
-os.environ["APP_SETTINGS"]="config.DevelopmentConfig"
-os.environ["DATABASE_URL"]="postgres://bivxusanexnbjp:12f8e000800ba66e4f98d0df4795edc962bdfd5318cbd9f19c7eaf16ef244f54@ec2-52-23-45-36.compute-1.amazonaws.com:5432/dd46p10a83f3m0"
-
-from app.irsystem.models import db
-from app.irsystem.models.movie import Movie
-from app.irsystem.models.game import Game
-from app.irsystem.models.eigenvector import eigenvector
 import json
+from app.irsystem.models.eigenvector import eigenvector
+from app.irsystem.models.game import Game
+from app.irsystem.models.movie import Movie
+from app.irsystem.models import db
+import os
+os.environ["APP_SETTINGS"] = "config.DevelopmentConfig"
+os.environ["DATABASE_URL"] = "postgres://bivxusanexnbjp:12f8e000800ba66e4f98d0df4795edc962bdfd5318cbd9f19c7eaf16ef244f54@ec2-52-23-45-36.compute-1.amazonaws.com:5432/dd46p10a83f3m0"
+
 
 DATA_DIR = os.path.abspath(os.path.join(__file__, "..", "..", "..", "data"))
 
-#TODO
-LOCAL_DATA_DIR = "/Users/changwei/Documents/GitHub/cs4300sp2021-cw887-qh75-rz92-yc687-yl698/app/data/pca_svd/"
+# TODO
+LOCAL_DATA_DIR = os.path.abspath(os.path.join(
+    __file__, "..", "..", "..", "data", 'pca_svd'))
 
 EIGENVECTORS_PCA_COLUMNS = "game_movie_eigenvectors_column.json"
+EIGENVECTORS_PCA_COLUMNS_RESHAPED = "game_movie_eigenvectors_column_reshaped.json"
 TOKEN_LST_BEFORE_PCA = "token_list_before_pca.json"
 DICT_TOKEN_TO_IDX_BEFORE_PCA = "dict_token_to_id_before_pca.json"
 MOVIE_VECTORS_PCA = "dict_movieid_to_vector_pca.json"
@@ -22,8 +24,8 @@ GAME_INFO_FILENAME = 'game_info.json'
 MOVIE_INFO_FILENAME = "movie_info.json"
 GAME_INFO_FILENAME = "game_info.json"
 
-def init_db():
 
+def init_db():
 
     # Create tables
     print("Create db tables...")
@@ -35,11 +37,17 @@ def init_db():
         movie_info = json.load(in_json_file)
     with open(os.path.join(DATA_DIR, GAME_INFO_FILENAME), "r") as in_json_file:
         game_info = json.load(in_json_file)
-    with open(LOCAL_DATA_DIR + EIGENVECTORS_PCA_COLUMNS, "r") as in_json_file:
-        eigenvectors_pca = json.load(in_json_file)
-    with open(LOCAL_DATA_DIR + MOVIE_VECTORS_PCA, "r") as in_json_file:
+    # with open(os.path.join(LOCAL_DATA_DIR, EIGENVECTORS_PCA_COLUMNS), "r") as in_json_file:
+    #     eigenvectors_pca = json.load(in_json_file)
+
+    # eigenvectors_pca_reshaped reshapes eigenvectors_pca vector to fit into 1388 rows
+    # Original vector dimension: 9716 x 2576
+    # Reshaped dimension: 1388 x 7 x 2576
+    with open(os.path.join(LOCAL_DATA_DIR, EIGENVECTORS_PCA_COLUMNS_RESHAPED), "r") as in_json_file:
+        eigenvectors_pca_reshaped = json.load(in_json_file)
+    with open(os.path.join(LOCAL_DATA_DIR, MOVIE_VECTORS_PCA), "r") as in_json_file:
         movie_vectors = json.load(in_json_file)
-    with open(LOCAL_DATA_DIR + GAME_VECTORS_PCA, "r") as in_json_file:
+    with open(os.path.join(LOCAL_DATA_DIR, GAME_VECTORS_PCA), "r") as in_json_file:
         game_vectors = json.load(in_json_file)
 
     print("Dump movie data...")
@@ -81,8 +89,8 @@ def init_db():
         ))
 
     print("Dump basis eigenvectors...")
-    db.session.add(eigenvector(rn="1", vec=json.dumps(eigenvectors_pca)))
-
+    for row, vectors in eigenvectors_pca_reshaped.items():
+        db.session.add(eigenvector(rn=row, vec=json.dumps(vectors)))
 
     db.session.commit()
 
@@ -100,11 +108,11 @@ def modify_db():
         movie_info = json.load(in_json_file)
     with open(os.path.join(DATA_DIR, GAME_INFO_FILENAME), "r") as in_json_file:
         game_info = json.load(in_json_file)
-    with open(LOCAL_DATA_DIR + EIGENVECTORS_PCA_COLUMNS, "r") as in_json_file:
+    with open(os.path.join(LOCAL_DATA_DIR, EIGENVECTORS_PCA_COLUMNS), "r") as in_json_file:
         eigenvectors_pca = json.load(in_json_file)
-    with open(LOCAL_DATA_DIR + MOVIE_VECTORS_PCA, "r") as in_json_file:
+    with open(os.path.join(LOCAL_DATA_DIR, MOVIE_VECTORS_PCA), "r") as in_json_file:
         movie_vectors = json.load(in_json_file)
-    with open(LOCAL_DATA_DIR + GAME_VECTORS_PCA, "r") as in_json_file:
+    with open(os.path.join(LOCAL_DATA_DIR, GAME_VECTORS_PCA), "r") as in_json_file:
         game_vectors = json.load(in_json_file)
 
     print("adding in movie vector...")

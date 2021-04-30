@@ -1,4 +1,3 @@
-# TODO: match meta data
 # num of players filtering, genres weighting
 from app.irsystem.controllers import GENRE_KEY
 from app.irsystem.models.movie import Movie
@@ -23,7 +22,7 @@ def _gen_sql_query(raw_genre_list):
 
 def filter_games(singleplayer: bool, multiplayer: bool, raw_genre_list):
     """
-    Returns: list of Game db objects filtered by number of players and list of input genre
+    Returns: list of game ids filtered by number of players and list of input genre
     """
     query = _gen_sql_query(raw_genre_list)
     res_games = eval(query)
