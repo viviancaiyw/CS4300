@@ -4,7 +4,7 @@ from marshmallow_sqlalchemy import ModelSchema
 from werkzeug import check_password_hash, generate_password_hash  # Hashing
 import hashlib  # For session_token generation (session-based auth. flow)
 import datetime  # For handling dates
-from app.irsystem.models import database
+# from app.irsystem.models import database
 
 import os
 

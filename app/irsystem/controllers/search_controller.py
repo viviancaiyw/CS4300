@@ -1,10 +1,9 @@
 # from flask_login import login_required
-
 from . import *
 
 from app.irsystem.controllers.get_info import *
-from app.irsystem.controllers.reviews_match import *
-from app.irsystem.controllers.titles_match import *
+# from app.irsystem.controllers.reviews_match import *
+# from app.irsystem.controllers.titles_match import *
 from app.irsystem.controllers.cosine_search import searchWrapper
 
 import json

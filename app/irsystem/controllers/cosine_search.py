@@ -10,7 +10,7 @@ from .metadata_match import filter_games
 
 def searchWrapper(singleplayer, multiplayer, raw_genre_list, free_list, movie_id):
     game_id_pool = filter_games(singleplayer, multiplayer, raw_genre_list)
-    selected_game_vectors, selected_game_id_list, selected_dict_gameid_to_idx = selected_games(game_id_pool)
+    selected_game_vectors, selected_game_id_list = selected_games(game_id_pool)
     return ranking_by_cosine_similarity(selected_game_vectors, selected_game_id_list, free_list, movie_id)
 
 def selected_games(game_id_pool):
@@ -40,7 +40,7 @@ def ranking_by_cosine_similarity(game_vectors, game_id_list, free_list, movie_id
     qvec = 0
     mvec = 0
     if movie_id is not None:
-        mvec = json.loads(Movie.query.filter_by(link_id=movie_id).vector_pca)
+        mvec = json.loads(Movie.query.filter_by(link_id=movie_id).first().vector_pca)
     if free_list is not None:
         qlist = [entry.lower() for entry in free_list]
         for entry in qlist:
@@ -68,7 +68,7 @@ def ranking_by_cosine_similarity(game_vectors, game_id_list, free_list, movie_id
 
     ret_list = []
     for game_id in rank_gameid:
-        gameObj = Game.query.filter_by(app_id=game_id)
+        gameObj = Game.query.filter_by(app_id=game_id).first()
         temp_dict = {game_id: {'name':gameObj.name,
                              'developer': gameObj.developer,
                              'publisher':gameObj.publisher,

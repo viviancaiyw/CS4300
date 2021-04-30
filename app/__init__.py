@@ -16,7 +16,7 @@ from flask_login import LoginManager
 socketio = SocketIO()
 app = Flask(__name__)
 app.config.from_object(os.environ["APP_SETTINGS"])
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 # DB
 db = SQLAlchemy(app)
@@ -43,7 +43,7 @@ from app.accounts.models.user import User
 # HTTP error handling
 @app.errorhandler(404)
 def not_found(error):
-  return render_template("404.html"), 404
+  return render_template("404.html", error=error), 404
 
 @app.shell_context_processor
 def make_shell_context():
