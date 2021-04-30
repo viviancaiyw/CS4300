@@ -32,6 +32,7 @@ import os
 import numpy as np
 from app.irsystem.models.eigenvector import eigenvector
 from app.irsystem.models.game import Game
+from app.irsystem.models.movie import Movie
 from app.irsystem.models import DATA_DIR
 
 TOKEN_LIST_FILENAME = "token_list_before_pca.json"
@@ -69,10 +70,18 @@ game_vectors = np.array([game_vectors[key] for key in game_id_list])
 # G_REV_WORD_TO_SYNPHRASES_FILENAME = 'game_rev_word_to_synphrase.json'
 
 MOVIE_NAME_FILENAME = 'movie_titles.json'
-G_GENRE_FILENAME = 'genre_list.json'
-G_GENRE_KEY_FILENAME = 'genre_key.json'
-MOVIE_GAME_TITLE_SIMILARITY_FILENAME = 'movie_game_title_similarity.json'
+# G_GENRE_FILENAME = 'genre_list.json'
+# MOVIE_GAME_TITLE_SIMILARITY_FILENAME = 'movie_game_title_similarity.json'
 
+G_GENRE_KEY_FILENAME = 'genre_key.json'
+
+with open(os.path.join(DATA_DIR, MOVIE_NAME_FILENAME), 'r', encoding='utf8') as in_json_file:
+    MOVIE_TITLES = json.load(in_json_file)
+
+with open(os.path.join(DATA_DIR, G_GENRE_KEY_FILENAME), 'r', encoding='utf8') as in_json_file:
+    GENRE_KEY = json.load(in_json_file)
+
+GAME_GENRES = list(sorted(GENRE_KEY.keys()))
 
 # with open(os.path.join(DATA_DIR, G_REV_COMMON_KEYWORDS_PHRASES_FILENAME), 'r', encoding='utf8') as in_json_file:
 #     G_REV_COMMON_KEYWORDS_PHRASES = json.load(in_json_file)
@@ -97,18 +106,12 @@ MOVIE_GAME_TITLE_SIMILARITY_FILENAME = 'movie_game_title_similarity.json'
 # with open(os.path.join(DATA_DIR, GAME_INFO_FILENAME), 'r', encoding='utf8') as in_json_file:
 #     GAME_INFO = json.load(in_json_file)
 # # print(mac_memory_in_MB, flush=True)
+#
+# with open(os.path.join(DATA_DIR, G_GENRE_FILENAME), 'r', encoding='utf8') as in_json_file:
+#     GAME_GENRES = json.load(in_json_file)
 
-with open(os.path.join(DATA_DIR, MOVIE_NAME_FILENAME), 'r', encoding='utf8') as in_json_file:
-    MOVIE_TITLES = json.load(in_json_file)
-
-with open(os.path.join(DATA_DIR, G_GENRE_FILENAME), 'r', encoding='utf8') as in_json_file:
-    GAME_GENRES = json.load(in_json_file)
-
-with open(os.path.join(DATA_DIR, MOVIE_GAME_TITLE_SIMILARITY_FILENAME), 'r', encoding='utf8') as in_json_file:
-    MOVIE_GAME_TITLE_SIMILARITY = json.load(in_json_file)
+# with open(os.path.join(DATA_DIR, MOVIE_GAME_TITLE_SIMILARITY_FILENAME), 'r', encoding='utf8') as in_json_file:
+#     MOVIE_GAME_TITLE_SIMILARITY = json.load(in_json_file)
 #
 # # mac_memory_in_MB = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / (2**20)
 # # print(mac_memory_in_MB, flush=True)
-#
-with open(os.path.join(DATA_DIR, G_GENRE_KEY_FILENAME), 'r', encoding='utf8') as in_json_file:
-    GENRE_KEY = json.load(in_json_file)

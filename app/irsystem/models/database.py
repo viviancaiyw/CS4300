@@ -23,6 +23,8 @@ GAME_VECTORS_PCA = "dict_gameid_to_vector_pca.json"
 GAME_INFO_FILENAME = 'game_info.json'
 MOVIE_INFO_FILENAME = "movie_info.json"
 GAME_INFO_FILENAME = "game_info.json"
+MOVIE_GAME_TITLE_SIMILARITY_FILENAME = "movie_game_title_similarity.json"
+MOVIE_NAME_FILENAME = "movie_id_to_title.json"
 
 
 def init_db():
@@ -49,12 +51,18 @@ def init_db():
         movie_vectors = json.load(in_json_file)
     with open(os.path.join(LOCAL_DATA_DIR, GAME_VECTORS_PCA), "r") as in_json_file:
         game_vectors = json.load(in_json_file)
+    with open(os.path.join(DATA_DIR, MOVIE_GAME_TITLE_SIMILARITY_FILENAME), "r") as in_json_file:
+        movie_game_title_sim = json.load(in_json_file)
+    with open(os.path.join(DATA_DIR, MOVIE_NAME_FILENAME), "r") as in_json_file:
+        movie_titles = json.load(in_json_file)
 
     print("Dump movie data...")
     for (link, info) in movie_info.items():
         db.session.add(Movie(
             link_id=str(link),
-            games=json.dumps(info['games']),
+            name=str(movie_titles[link]),
+            games_review_match=json.dumps(info['games']),
+            games_title_match=json.dumps(movie_game_title_sim.get(link, [])),
             genre=json.dumps(info['genre']),
             desc_keywords=json.dumps(info['desc_keywords']),
             vector_pca=json.dumps(movie_vectors[link])
