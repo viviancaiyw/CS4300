@@ -26,7 +26,7 @@ from app.irsystem import irsystem
 # Import module models
 # from app.accounts.models.user import *
 # from app.accounts.models.session import *
-import resource
+# import resource
 import json
 import os
 import numpy as np
@@ -127,5 +127,5 @@ GAME_GENRES = list(sorted(GENRE_KEY.keys()))
 # with open(os.path.join(DATA_DIR, MOVIE_GAME_TITLE_SIMILARITY_FILENAME), 'r', encoding='utf8') as in_json_file:
 #     MOVIE_GAME_TITLE_SIMILARITY = json.load(in_json_file)
 #
-mac_memory_in_MB = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / (2**20)
-print(mac_memory_in_MB, flush=True)
+# mac_memory_in_MB = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / (2**20)
+# print(mac_memory_in_MB, flush=True)
