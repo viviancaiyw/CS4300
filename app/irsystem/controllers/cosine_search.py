@@ -74,17 +74,16 @@ def ranking_by_cosine_similarity(game_vectors, game_id_list, free_list, movie_id
     for game_id in rank_gameid:
         gameObj = Game.query.filter_by(app_id=game_id).first()
         temp_dict = {
-            'app_id': app_id,
+            'app_id': game_id,
             'name': gameObj.name,
-            'developer': gameObj.developer,
-            'publisher': gameObj.publisher,
-            'tags': gameObj.tags,
-            'genre': gameObj.genre,
+            'developer': ", ".join(json.loads(gameObj.developer)),
+            'publisher': ", ".join(json.loads(gameObj.publisher)),
+            'tags': json.loads(gameObj.tags),
+            'genre': json.loads(gameObj.genre),
             'single_player': gameObj.single_player,
             'multi_player': gameObj.multi_player,
             'rating': gameObj.rating,
             'mature_content': gameObj.mature_content,
-            'url': gameObj.url
         }
         ret_list.append(temp_dict)
 

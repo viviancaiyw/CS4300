@@ -2,6 +2,7 @@ from typing import List, Dict
 
 from app.irsystem.models.game import Game
 from app.irsystem.models.movie import Movie
+import json
 
 
 def get_matched_game_ranking_info(movie_id: str) -> Dict[str, int]:
@@ -31,15 +32,14 @@ def get_top_games_from_title(mov_tmt_path: str, candidate_games: List[str],
             game_info = {
                 'app_id': app_id,
                 'name': game_obj.name,
-                'developer': game_obj.developer,
-                'publisher': game_obj.publisher,
-                'tags': game_obj.tags,
-                'genre': game_obj.genre,
+                'developer': ", ".join(json.loads(game_obj.developer)),
+                'publisher': ", ".join(json.loads(game_obj.publisher)),
+                'tags': json.loads(game_obj.tags),
+                'genre': json.loads(game_obj.genre),
                 'single_player': game_obj.single_player,
                 'multi_player': game_obj.multi_player,
                 'rating': game_obj.rating,
                 'mature_content': game_obj.mature_content,
-                'url': game_obj.url,
                 'title_match_score': score}
             res.append(game_info)
     return res
