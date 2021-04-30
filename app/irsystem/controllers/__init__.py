@@ -44,7 +44,14 @@ with open(os.path.join(DATA_DIR, DICT_TOKEN_TO_ID_FILENAME), "r") as json_in:
     dict_token_to_id = json.load(json_in)
 
 # retrieve basis eigenvectors
-basis_eigenvector = json.loads(eigenvector.query.get("1").alleigenvector)
+# basis_eigenvector = json.loads(eigenvector.query.get("1").alleigenvector)
+# basis_eigenvector = np.array(basis_eigenvector)
+
+# handle reshaped basis_eigenvector
+retrieved_eigenvectors = db.session.query(eigenvector.alleigenvector).all()
+basis_eigenvector = []
+for vector in retrieved_eigenvectors:
+    basis_eigenvector.extend(vector)
 basis_eigenvector = np.array(basis_eigenvector)
 
 # retrieve vector of all games
