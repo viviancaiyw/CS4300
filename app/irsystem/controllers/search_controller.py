@@ -38,13 +38,13 @@ def search_action():
     genres = json.loads(request.form.get('gameGenre')) if request.form.get(
         'gameGenre') else None  # TODO: add it to response
 
-    # response_body = searchWrapper(playerSingle, playerMulti, genres, tags, movie)
+    # response_body = searchWrapper(playerSingle, playerMulti, genres, tags, movie, game_vectors, game_id_list)
     metadata_candidates = filter_games(singleplayer=playerSingle,
                                        multiplayer=playerMulti,
                                        raw_genre_list=genres)
     response_body = {
         "based on svd": searchWrapper(
-            playerSingle, playerMulti, genres, tags, movie),
+            playerSingle, playerMulti, genres, tags, movie, game_vectors, game_id_list),
         "based on titles": get_top_games_from_title(
             mov_tmt_path=movie, candidate_games=metadata_candidates,
             threshold=0.3)

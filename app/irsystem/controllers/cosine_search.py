@@ -8,18 +8,21 @@ from . import raw_token_list, dict_token_to_id, basis_eigenvector, game_vectors,
 from .metadata_match import filter_games
 
 
-def searchWrapper(singleplayer, multiplayer, raw_genre_list, free_list, movie_id):
+def searchWrapper(singleplayer, multiplayer, raw_genre_list, free_list, movie_id, game_vectors, game_id_list):
     game_id_pool = filter_games(singleplayer, multiplayer, raw_genre_list)
-    selected_game_vectors, selected_game_id_list = selected_games(game_id_pool)
+    selected_game_vectors, selected_game_id_list = selected_games(game_id_pool, game_vectors, game_id_list)
     return ranking_by_cosine_similarity(selected_game_vectors, selected_game_id_list, free_list, movie_id)
 
 
-def selected_games(game_id_pool):
-    idx_list = [dict_gameid_to_idx[game_id] for game_id in game_id_pool]
-    idx_list.sort()
-    selected_game_vectors = game_vectors[idx_list]
-    selected_game_id_list = game_id_list[idx_list]
-    return selected_game_vectors, selected_game_id_list
+def selected_games(game_id_pool, game_vectors, game_id_list):
+    if game_id_pool is not None:
+        idx_list = [dict_gameid_to_idx[game_id] for game_id in game_id_pool]
+        idx_list.sort()
+        selected_game_vectors = game_vectors[idx_list]
+        selected_game_id_list = game_id_list[idx_list]
+        return selected_game_vectors, selected_game_id_list
+    else:
+        return game_vectors, game_id_list
 
 # return a list of syns of given token
 
@@ -40,11 +43,8 @@ def ranking_by_cosine_similarity(game_vectors, game_id_list, free_list, movie_id
     """
     free_list is the list of free typing strs
     """
-    qvec = 0
-    mvec = 0
-    if movie_id is not None:
-        mvec = json.loads(Movie.query.filter_by(
-            link_id=movie_id).first().vector_pca)
+    mvec = np.array(json.loads(Movie.query.filter_by(
+            link_id=movie_id).first().vector_pca))
     if free_list is not None:
         qlist = [entry.lower() for entry in free_list]
         for entry in qlist:
@@ -62,6 +62,8 @@ def ranking_by_cosine_similarity(game_vectors, game_id_list, free_list, movie_id
                 else:
                     qvec[dict_token_to_id[term]] += 2
         qvec = np.matmul(qvec, basis_eigenvector)
+    else:
+        qvec = 0
     qvec += mvec
 
     game_norms = np.linalg.norm(game_vectors, axis=1)
