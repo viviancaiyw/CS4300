@@ -1,13 +1,111 @@
+{% extends "base.html" %}
 {% block content %}
-
-<div class="container">
-    <ul>
-        <li>players: {{ form.players.data }}</li>
-        <li>genres: {{ form.genres.data }}</li>
-        <li>movies: {{ form.movie.data}}</li>
-        <li>tags: {{ form.tags.data }}</li>
-        <a class="btn btn-primary" href="{{ url_for('irsystem.home') }}">Back</a>
-    </ul>
+<div class="row justify-content-md-center">
+    <div class="col-12">
+        <div class="placeholder"></div>
+        <h1 class="display-2 text-white search-title">RESULTS</h1>
+        <div class="placeholder"></div>
+        {% if data %}
+        {% for type, games in data.items() %}
+        <div class="card">
+            <div class="card-header">Results {% print(type) %}</div>
+            <div class="card-body">
+                <div class="row row-cols-3">
+                    {% for game in games %}
+                    <div class="col result-col">
+                        <div class="card text-dark bg-light mb-3 h-100">
+                            <img class="card-img-top"
+                                src="https://cdn.akamai.steamstatic.com/steam/apps/{% print(game['app_id']) %}/header.jpg">
+                            <div class="card-body">
+                                <h5 class="card-title">{% print(game['name']) %}</h5>
+                                {% if game['developer'] != '-' %}
+                                <span class="blockquote-footer"><cite>Developed by {% print(game['developer'])
+                                        %}</cite></span>
+                                {% endif %}
+                                {% if game['publisher'] != '-' %}
+                                <span class="blockquote-footer"><cite>Published by {% print(game['publisher']) %}</cite>
+                                </span>
+                                {% endif %}
+                                <div class="precision-placeholder"></div>
+                                <div class="row v-center">
+                                    <div class="col">
+                                        <span>Steam Rating: </span>
+                                    </div>
+                                    <div class="col">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar"
+                                                style="width: {% print(game['rating']) %}%;">{%
+                                                print(game['rating']) %}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="precision-placeholder"></div>
+                                <div class="row v-center">
+                                    <div class="col">
+                                        <span>Players:</span>
+                                    </div>
+                                    {% if game['single_player'] %}
+                                    <div class="col">
+                                        <i class="bi bi-person-fill text-primary"></i>
+                                    </div>
+                                    {% endif %}
+                                    {% if game['multi_player'] %}
+                                    <div class="col">
+                                        <i class="bi bi-people-fill text-primary"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% if game['mature_content'] %}
+                                <div class="precision-placeholder"></div>
+                                <div class="row v-center">
+                                    <div class="col">
+                                        <span class="text-warning" data-bs-html="true"><i
+                                                class="bi bi-exclamation-circle-fill"></i>
+                                            &nbsp;This game contains mature content</span>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="precision-placeholder"></div>
+                                <div class="row v-center">
+                                    <div class="col">
+                                        <a role="button" class="text-info" data-bs-html="true" data-bs-toggle="popover"
+                                            data-bs-content="
+                                                <ul class='list-group'>
+                                                    <li class='list-group-item'>Example Reason 1</li>
+                                                    <li class='list-group-item'>Example Reason 2</li>
+                                                    <li class='list-group-item'>Example Reason 3</li>
+                                                </ul>
+                                                " data-bs-trigger="hover"><i class="bi bi-question-circle-fill"></i>
+                                            &nbsp;Why is this game
+                                            recommend</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="button" class="btn btn-dark btn-lg btn-block"
+                                    onclick="window.open('https://store.steampowered.com/app/{% print(game['app_id']) %}/','_blank')">Take
+                                    me there!</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="placeholder"></div>
+        {% endfor %}
+        {% endif %}
+    </div>
 </div>
+{% endblock %}
 
+{% block script %}
+<script>
+    $(document).ready(function (e) {
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+        })
+    })
+</script>
 {% endblock %}

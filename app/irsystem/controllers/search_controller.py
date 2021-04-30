@@ -45,7 +45,7 @@ def search_action():
     response_body = {
         "based on svd": searchWrapper(
             playerSingle, playerMulti, genres, tags, movie),
-        "based on titles": str(get_top_games_from_title(
-            mov_tmt_path=movie, candidate_games=metadata_candidates))
+        "based on titles": get_top_games_from_title(
+            mov_tmt_path=movie, candidate_games=metadata_candidates)
     }
-    return Response(json.dumps(response_body))
+    return render_template('result.html', data=response_body)
