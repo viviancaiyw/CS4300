@@ -80,7 +80,7 @@ game_vectors = np.array([game_vectors[key] for key in game_id_list])
 # G_REV_WORD_TO_SYNPHRASES_FILENAME = 'game_rev_word_to_synphrase.json'
 
 MOVIE_NAME_FILENAME = 'movie_titles.json'
-G_GENRE_FILENAME = 'genre_list.json'
+# G_GENRE_FILENAME = 'genre_list.json'
 # MOVIE_GAME_TITLE_SIMILARITY_FILENAME = 'movie_game_title_similarity.json'
 
 G_GENRE_KEY_FILENAME = 'genre_key.json'

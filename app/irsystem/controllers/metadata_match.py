@@ -13,7 +13,7 @@ def _gen_sql_query(raw_genre_list):
     if raw_genre_list != None:
         for genre in raw_genre_list:
             genre_list.append(GENRE_KEY.get(genre, ''))
-    query = """Game.query.filter(Game.single_player == singleplayer, Game.multi_player == multiplayer,("""
+    query = """Game.query.filter(((Game.single_player == singleplayer) | (Game.multi_player == multiplayer)), ("""
     for genre in genre_list:
         query = query + "Game.genre.like('%{}%')|".format(genre)
     if len(genre_list):
