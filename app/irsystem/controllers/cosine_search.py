@@ -13,6 +13,7 @@ def searchWrapper(singleplayer, multiplayer, raw_genre_list, free_list, movie_id
     selected_game_vectors, selected_game_id_list = selected_games(game_id_pool)
     return ranking_by_cosine_similarity(selected_game_vectors, selected_game_id_list, free_list, movie_id)
 
+
 def selected_games(game_id_pool):
     idx_list = [dict_gameid_to_idx[game_id] for game_id in game_id_pool]
     idx_list.sort()
@@ -21,6 +22,8 @@ def selected_games(game_id_pool):
     return selected_game_vectors, selected_game_id_list
 
 # return a list of syns of given token
+
+
 def return_syns(token) -> list:
     res = []
     syn_n = wn.synsets(token, pos=wn.NOUN)
@@ -40,7 +43,8 @@ def ranking_by_cosine_similarity(game_vectors, game_id_list, free_list, movie_id
     qvec = 0
     mvec = 0
     if movie_id is not None:
-        mvec = json.loads(Movie.query.filter_by(link_id=movie_id).first().vector_pca)
+        mvec = json.loads(Movie.query.filter_by(
+            link_id=movie_id).first().vector_pca)
     if free_list is not None:
         qlist = [entry.lower() for entry in free_list]
         for entry in qlist:
@@ -69,21 +73,19 @@ def ranking_by_cosine_similarity(game_vectors, game_id_list, free_list, movie_id
     ret_list = []
     for game_id in rank_gameid:
         gameObj = Game.query.filter_by(app_id=game_id).first()
-        temp_dict = {game_id: {'name':gameObj.name,
-                             'developer': gameObj.developer,
-                             'publisher':gameObj.publisher,
-                             'tags':gameObj.tags,
-                             'genre':gameObj.genre,
-                             'single_player':gameObj.single_player,
-                             'multi_player':gameObj.multi_player,
-                             'rating':gameObj.rating,
-                             'mature_content':gameObj.mature_content,
-                             'url':gameObj.url
-                             }}
+        temp_dict = {
+            'app_id': app_id,
+            'name': gameObj.name,
+            'developer': gameObj.developer,
+            'publisher': gameObj.publisher,
+            'tags': gameObj.tags,
+            'genre': gameObj.genre,
+            'single_player': gameObj.single_player,
+            'multi_player': gameObj.multi_player,
+            'rating': gameObj.rating,
+            'mature_content': gameObj.mature_content,
+            'url': gameObj.url
+        }
         ret_list.append(temp_dict)
 
     return ret_list
-
-
-
-
