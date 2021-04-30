@@ -10,13 +10,16 @@ def _gen_sql_query(raw_genre_list):
     Returns: The sqlalchemy query for a give genre list to filter the game by    
     """
     genre_list = []
-    for genre in raw_genre_list:
-        genre_list.append(GENRE_KEY[genre])
-    print(genre_list)
+    if raw_genre_list != None:
+        for genre in raw_genre_list:
+            genre_list.append(GENRE_KEY.get(genre, ''))
     query = """Game.query.filter(Game.single_player == singleplayer, Game.multi_player == multiplayer,("""
     for genre in genre_list:
         query = query + "Game.genre.like('%{}%')|".format(genre)
-    query = query[:-1] + ')).all()'
+    if len(genre_list):
+        query = query[:-1] + ')).all()'
+    else:
+        query = query[:-2] + ').all()'
     return query
 
 
