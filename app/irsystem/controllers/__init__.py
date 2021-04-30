@@ -51,8 +51,11 @@ with open(os.path.join(DATA_DIR, DICT_TOKEN_TO_ID_FILENAME), "r") as json_in:
 retrieved_eigenvectors = db.session.query(eigenvector.alleigenvector).all()
 basis_eigenvector = []
 for vector in retrieved_eigenvectors:
-    basis_eigenvector.extend(vector)
+    basis_eigenvector.extend(eval(vector.alleigenvector))
+with open(os.path.join(DATA_DIR, 'basis_eigenvector.json'), 'w') as json_file:
+    json.dump(basis_eigenvector, json_file)
 basis_eigenvector = np.array(basis_eigenvector)
+
 
 # retrieve vector of all games
 game_vectors = dict()
