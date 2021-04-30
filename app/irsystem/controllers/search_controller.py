@@ -46,6 +46,7 @@ def search_action():
         "based on svd": searchWrapper(
             playerSingle, playerMulti, genres, tags, movie),
         "based on titles": get_top_games_from_title(
-            mov_tmt_path=movie, candidate_games=metadata_candidates)
+            mov_tmt_path=movie, candidate_games=metadata_candidates,
+            threshold=0.3)
     }
     return render_template('result.html', data=response_body)
