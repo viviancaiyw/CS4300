@@ -26,7 +26,7 @@ from app.irsystem import irsystem
 # Import module models
 # from app.accounts.models.user import *
 # from app.accounts.models.session import *
-
+import resource
 import json
 import os
 import numpy as np
@@ -37,24 +37,28 @@ from app.irsystem.models import DATA_DIR
 
 TOKEN_LIST_FILENAME = "token_list_before_pca.json"
 DICT_TOKEN_TO_ID_FILENAME = "dict_token_to_id_before_pca.json"
+EIGENVECTOR_COLUMN_FILENAME = "game_movie_eigenvectors_column.json"
 
 with open(os.path.join(DATA_DIR, TOKEN_LIST_FILENAME), "r") as json_in:
     raw_token_list = json.load(json_in)
 with open(os.path.join(DATA_DIR, DICT_TOKEN_TO_ID_FILENAME), "r") as json_in:
     dict_token_to_id = json.load(json_in)
+with open(os.path.join(DATA_DIR, EIGENVECTOR_COLUMN_FILENAME), "r") as json_in:
+    basis_eigenvector = json.load(json_in)
+basis_eigenvector = np.array(basis_eigenvector)
 
 # retrieve basis eigenvectors
 # basis_eigenvector = json.loads(eigenvector.query.get("1").alleigenvector)
 # basis_eigenvector = np.array(basis_eigenvector)
 
 # handle reshaped basis_eigenvector
-retrieved_eigenvectors = db.session.query(eigenvector.alleigenvector).all()
-basis_eigenvector = []
-for vector in retrieved_eigenvectors:
-    basis_eigenvector.extend(eval(vector.alleigenvector))
+# retrieved_eigenvectors = db.session.query(eigenvector.alleigenvector).all()
+# basis_eigenvector = []
+# for vector in retrieved_eigenvectors:
+#     basis_eigenvector.extend(eval(vector.alleigenvector))
 # with open(os.path.join(DATA_DIR, 'basis_eigenvector.json'), 'w') as json_file:
 #     json.dump(basis_eigenvector, json_file)
-basis_eigenvector = np.array(basis_eigenvector)
+# basis_eigenvector = np.array(basis_eigenvector)
 
 
 # retrieve vector of all games
@@ -68,7 +72,7 @@ dict_gameid_to_idx = {gid: i for i, gid in enumerate(game_id_list)}
 game_vectors = np.array([game_vectors[key] for key in game_id_list])
 
 
-# import resource
+
 
 # For now use movie_info2, which doesn't have desc_keywords
 # MOVIE_INFO_FILENAME = 'movie_info.json'
@@ -123,5 +127,5 @@ GAME_GENRES = list(sorted(GENRE_KEY.keys()))
 # with open(os.path.join(DATA_DIR, MOVIE_GAME_TITLE_SIMILARITY_FILENAME), 'r', encoding='utf8') as in_json_file:
 #     MOVIE_GAME_TITLE_SIMILARITY = json.load(in_json_file)
 #
-# # mac_memory_in_MB = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / (2**20)
-# # print(mac_memory_in_MB, flush=True)
+mac_memory_in_MB = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / (2**20)
+print(mac_memory_in_MB, flush=True)
