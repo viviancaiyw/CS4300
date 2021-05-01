@@ -1,4 +1,5 @@
 import os
+
 os.environ["APP_SETTINGS"] = "config.DevelopmentConfig"
 os.environ["DATABASE_URL"] = "postgres://bivxusanexnbjp:12f8e000800ba66e4f98d0df4795edc962bdfd5318cbd9f19c7eaf16ef244f54@ec2-52-23-45-36.compute-1.amazonaws.com:5432/dd46p10a83f3m0"
 # os.environ["DATABASE_URL"] = "postgresql://changwei:w45039w45039@localhost/app_trial"
@@ -7,7 +8,6 @@ from app.irsystem.models.eigenvector import eigenvector
 from app.irsystem.models.game import Game
 from app.irsystem.models.movie import Movie
 from app import db
-
 
 DATA_DIR = os.path.abspath(os.path.join(__file__, "..", "..", "..", "data"))
 
@@ -24,12 +24,11 @@ GAME_VECTORS_PCA = "dict_gameid_to_vector_pca.json"
 GAME_INFO_FILENAME = 'game_info.json'
 MOVIE_INFO_FILENAME = "movie_info.json"
 GAME_INFO_FILENAME = "game_info.json"
-MOVIE_GAME_TITLE_SIMILARITY_FILENAME = "movie_game_title_similarity.json"
+TOP3000_MOVIE_GAME_TITLE_SIMILARITY_FILENAME = "top3000movie_game_title_similarity.json"
 MOVIE_NAME_FILENAME = "movie_id_to_title.json"
 
 
 def init_db():
-
     # Create tables
     print("Create db tables...")
     db.create_all()
@@ -40,7 +39,8 @@ def init_db():
         movie_info = json.load(in_json_file)
     with open(os.path.join(DATA_DIR, GAME_INFO_FILENAME), "r") as in_json_file:
         game_info = json.load(in_json_file)
-    with open(os.path.join(LOCAL_DATA_DIR, EIGENVECTORS_PCA_COLUMNS), "r") as in_json_file:
+    with open(os.path.join(LOCAL_DATA_DIR, EIGENVECTORS_PCA_COLUMNS),
+              "r") as in_json_file:
         eigenvectors_pca = json.load(in_json_file)
 
     # eigenvectors_pca_reshaped reshapes eigenvectors_pca vector to fit into 1388 rows
@@ -48,11 +48,14 @@ def init_db():
     # Reshaped dimension: 1388 x 7 x 2576
     # with open(os.path.join(LOCAL_DATA_DIR, EIGENVECTORS_PCA_COLUMNS_RESHAPED), "r") as in_json_file:
     #     eigenvectors_pca_reshaped = json.load(in_json_file)
-    with open(os.path.join(LOCAL_DATA_DIR, MOVIE_VECTORS_PCA), "r") as in_json_file:
+    with open(os.path.join(LOCAL_DATA_DIR, MOVIE_VECTORS_PCA),
+              "r") as in_json_file:
         movie_vectors = json.load(in_json_file)
-    with open(os.path.join(LOCAL_DATA_DIR, GAME_VECTORS_PCA), "r") as in_json_file:
+    with open(os.path.join(LOCAL_DATA_DIR, GAME_VECTORS_PCA),
+              "r") as in_json_file:
         game_vectors = json.load(in_json_file)
-    with open(os.path.join(DATA_DIR, MOVIE_GAME_TITLE_SIMILARITY_FILENAME), "r") as in_json_file:
+    with open(os.path.join(DATA_DIR, TOP3000_MOVIE_GAME_TITLE_SIMILARITY_FILENAME),
+              "r") as in_json_file:
         movie_game_title_sim = json.load(in_json_file)
     with open(os.path.join(DATA_DIR, MOVIE_NAME_FILENAME), "r") as in_json_file:
         movie_titles = json.load(in_json_file)
@@ -120,11 +123,14 @@ def modify_db():
         movie_info = json.load(in_json_file)
     with open(os.path.join(DATA_DIR, GAME_INFO_FILENAME), "r") as in_json_file:
         game_info = json.load(in_json_file)
-    with open(os.path.join(LOCAL_DATA_DIR, EIGENVECTORS_PCA_COLUMNS), "r") as in_json_file:
+    with open(os.path.join(LOCAL_DATA_DIR, EIGENVECTORS_PCA_COLUMNS),
+              "r") as in_json_file:
         eigenvectors_pca = json.load(in_json_file)
-    with open(os.path.join(LOCAL_DATA_DIR, MOVIE_VECTORS_PCA), "r") as in_json_file:
+    with open(os.path.join(LOCAL_DATA_DIR, MOVIE_VECTORS_PCA),
+              "r") as in_json_file:
         movie_vectors = json.load(in_json_file)
-    with open(os.path.join(LOCAL_DATA_DIR, GAME_VECTORS_PCA), "r") as in_json_file:
+    with open(os.path.join(LOCAL_DATA_DIR, GAME_VECTORS_PCA),
+              "r") as in_json_file:
         game_vectors = json.load(in_json_file)
 
     print("adding in movie vector...")
@@ -147,7 +153,22 @@ def modify_db():
     print("adding in movie vector complete...")
 
 
+def modify_title_similarity():
+    print("updating similarity scores ...")
+    with open(os.path.join(DATA_DIR,
+                           TOP3000_MOVIE_GAME_TITLE_SIMILARITY_FILENAME),
+              "r") as in_json_file:
+        movie_game_sim = json.load(in_json_file)
+
+    for link_id in movie_game_sim.keys():
+        movie_obj: Movie = Movie.query.filter_by(link_id=link_id).first()
+        movie_obj.games_title_match = json.dumps(movie_game_sim[link_id])
+    db.session.commit()
+    print("finish updating similarity scores ...")
+
+
 if __name__ == '__main__':
-    drop_db()
-    init_db()
+    # drop_db()
+    # init_db()
     # modify_db()
+    modify_title_similarity()
