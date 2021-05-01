@@ -32,9 +32,10 @@ def search_action():
     playerSingle = True if request.form.get('playerTypeSingle') else False
     playerMulti = True if request.form.get('playerTypeMulti') else False
     tags = json.loads(request.form.get('gameTags')) if request.form.get(
-        'gameTags') else None
+        'gameTags') else []
     movie = request.form.get('movieEnjoy') if request.form.get(
         'movieEnjoy') else None
+    tags.extend(movie.split('_'))
     genres = json.loads(request.form.get('gameGenre')) if request.form.get(
         'gameGenre') else None  # TODO: add it to response
 
