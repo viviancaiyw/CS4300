@@ -147,6 +147,11 @@
             e.preventDefault();
             return;
         }
+        if ($("#movieEnjoy").val() === "") {
+            formIncompleteAlert("Please fill in a movie you like so that we can recommend similar games!");
+            e.preventDefault();
+            return;
+        }
         if ($("#gameGenre").val() === "" && $("#movieEnjoy").val() === "" && $("#gameTags").val() === "") {
             formIncompleteAlert("Please don't leave everything blank : (");
             e.preventDefault();
