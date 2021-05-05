@@ -88,6 +88,7 @@ MOVIE_NAME_FILENAME = 'movie_titles.json'
 # MOVIE_GAME_TITLE_SIMILARITY_FILENAME = 'movie_game_title_similarity.json'
 
 G_GENRE_KEY_FILENAME = 'genre_key.json'
+GAMENAME_TO_ID_FILENAME = 'dict_game_name_to_id.json'
 
 with open(os.path.join(DATA_DIR, MOVIE_NAME_FILENAME), 'r', encoding='utf8') as in_json_file:
     MOVIE_TITLES = json.load(in_json_file)
@@ -95,6 +96,8 @@ with open(os.path.join(DATA_DIR, MOVIE_NAME_FILENAME), 'r', encoding='utf8') as 
 with open(os.path.join(DATA_DIR, G_GENRE_KEY_FILENAME), 'r', encoding='utf8') as in_json_file:
     GENRE_KEY = json.load(in_json_file)
 
+with open(os.path.join(DATA_DIR, GAMENAME_TO_ID_FILENAME), 'r', encoding='utf8') as in_json_file:
+    dict_gamename_to_id = json.load(in_json_file)
 GAME_GENRES = list(sorted(GENRE_KEY.keys()))
 
 # with open(os.path.join(DATA_DIR, G_REV_COMMON_KEYWORDS_PHRASES_FILENAME), 'r', encoding='utf8') as in_json_file:

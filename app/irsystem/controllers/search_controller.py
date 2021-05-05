@@ -18,7 +18,7 @@ def home():
     return render_template('search.html',
                            genresData=json.dumps(get_genre_list()),
                            moviesData=json.dumps(get_movie_list()))
-
+# TODO get_game_dict() returns [{game_name:game_id}...]
 
 @irsystem.route('/search', methods=['GET'])
 def search():
