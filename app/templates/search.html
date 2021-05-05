@@ -55,19 +55,6 @@
 
                             <div class="row">
                                 <div class="col-2">
-                                    <label for="booksEnjoy" class="form-label"><i class="bi bi-book text-primary"></i>
-                                        Book</label>
-                                </div>
-                                <div class="col-10">
-                                    <input type="text" disabled id="booksEnjoy" class="form-control"
-                                        placeholder="Not Supported Yet">
-                                </div>
-                            </div>
-
-                            <div class="precision-placeholder"></div>
-
-                            <div class="row">
-                                <div class="col-2">
                                     <label for="movieEnjoy" class="form-label"><i class="bi bi-tv text-primary"></i>
                                         Movie</label>
                                 </div>
@@ -78,14 +65,19 @@
 
                             <div class="precision-placeholder"></div>
 
+                            <div class="row justify-content-md-center">
+                                <div class="col-auto text-primary"><b>or</b></div>
+                            </div>
+
+                            <div class="precision-placeholder"></div>
+
                             <div class="row">
                                 <div class="col-2">
-                                    <label for="gamesEnjoy" class="form-label"><i
+                                    <label for="gameEnjoy" class="form-label"><i
                                             class="bi bi-suit-spade text-primary"></i> Game</label>
                                 </div>
                                 <div class="col-10">
-                                    <input type="text" disabled id="gamesEnjoy" class="form-control"
-                                        placeholder="Not Supported Yet">
+                                    <input id="gameEnjoy" name="gameEnjoy" class="search-tag-input">
                                 </div>
                             </div>
 
@@ -124,6 +116,7 @@
 </div>
 
 <input type="hidden" id="moviesData" value="{% if moviesData %}{% print(moviesData) %}{% else %}[]{% endif %}">
+<input type="hidden" id="gamesData" value="{% if gamesData %}{% print(gamesData) %}{% else %}[]{% endif %}">
 <input type="hidden" id="genresData" value="{% if genresData %}{% print(genresData) %}{% else %}[]{% endif %}">
 {% endblock %}
 
@@ -147,8 +140,8 @@
             e.preventDefault();
             return;
         }
-        if ($("#movieEnjoy").val() === "") {
-            formIncompleteAlert("Please fill in a movie you like so that we can recommend similar games!");
+        if ($("#movieEnjoy").val() === "" && $("#gameGenre").val() === "") {
+            formIncompleteAlert("Please fill in a movie/game you like so that we can recommend similar games!");
             e.preventDefault();
             return;
         }
@@ -214,12 +207,54 @@
             }
         }
     });
-    movieTagify.on('add', onMovieAdd);
+    movieTagify.on('add', onMovieAdd).on('remove', onMovieRemove);
     function onMovieAdd(e) {
         if (!e.detail.data.hasOwnProperty('id')) {
             movieTagify.removeAllTags();
         }
+        else {
+            $("#gameEnjoy").prop('disabled', true);
+        }
     }
+    function onMovieRemove(e) {
+        $("#gameEnjoy").prop('disabled', false);
+        $("#gameEnjoy").attr('placeholder', 'disabled')
+    }
+
+    let games = JSON.parse($("#gamesData").val()).map(function (x) {
+        return { value: x[0], id: x[1] };
+    });
+    let gameInput = document.querySelector('input[id=gameEnjoy]');
+    let gameTagify = new Tagify(gameInput, {
+        mode: 'select',
+        whitelist: games,
+        dropdown: {
+            classname: "color-blue",
+            enabled: 0,
+            highlightFirst: true,
+            maxItems: 30,
+        },
+        templates: {
+            dropdownItemNoMatch: function (data) {
+                return `
+                    No suggestion found, please enter valid items only.
+                `
+            }
+        }
+    });
+    gameTagify.on('add', onGameAdd).on('remove', onGameRemove);
+    function onGameAdd(e) {
+        if (!e.detail.data.hasOwnProperty('id')) {
+            gameTagify.removeAllTags();
+        }
+        else {
+            $("#movieEnjoy").prop('disabled', true);
+        }
+    }
+    function onGameRemove(e) {
+        $("#movieEnjoy").prop('disabled', false);
+    }
+
     let tagInput = document.querySelector('input[id=gameTags]');
     let tagTagify = new Tagify(tagInput, {
         pattern: /^(?:\b\w+\b[\s\r\n]*){1,5}$/,
