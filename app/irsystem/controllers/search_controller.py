@@ -17,8 +17,8 @@ net_id = "Chang Wei: cw887, Qichen Hu: qh75, Yuwen Cai: yc687, Yitian Lin: yl698
 def home():
     return render_template('search.html',
                            genresData=json.dumps(get_genre_list()),
-                           moviesData=json.dumps(get_movie_list()))
-# TODO get_game_dict() returns [{game_name:game_id}...]
+                           moviesData=json.dumps(get_movie_list()),
+                           gamesData=json.dumps(get_game_dict()))
 
 @irsystem.route('/search', methods=['GET'])
 def search():

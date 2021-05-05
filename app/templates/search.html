@@ -12,6 +12,7 @@
                 <div class="row justify-content-md-center">
                     <div class="col-10">
                         <form id="search-form" action="/search-run" method="post" accept-charset="utf-8">
+                            <div class="precision-placeholder"></div>
                             <div class="row search-card-row">
                                 <div class="col-2">
                                     <span><strong>PLAYERS: </strong></span>
@@ -54,40 +55,35 @@
                             <div class="precision-placeholder"></div>
 
                             <div class="row">
-                                <div class="col-2">
-                                    <label for="movieEnjoy" class="form-label"><i class="bi bi-tv text-primary"></i>
-                                        Movie</label>
+                                <div class="col-12">
+                                    <small class="form-text text-muted">We will recommend you games based on
+                                        movies/games you already enjoy.</b></small>
                                 </div>
-                                <div class="col-10">
-                                    <input class="search-tag-input" id="movieEnjoy" name="movieEnjoy">
-                                </div>
-                            </div>
-
-                            <div class="precision-placeholder"></div>
-
-                            <div class="row justify-content-md-center">
-                                <div class="col-auto text-primary"><b>or</b></div>
                             </div>
 
                             <div class="precision-placeholder"></div>
 
                             <div class="row">
-                                <div class="col-2">
-                                    <label for="gameEnjoy" class="form-label"><i
-                                            class="bi bi-suit-spade text-primary"></i> Game</label>
-                                </div>
-                                <div class="col-10">
-                                    <input id="gameEnjoy" name="gameEnjoy" class="search-tag-input">
+                                <div class="col-12">
+                                    <div class="list-group" id="list-tab" role="tablist">
+                                        <a class="list-group-item list-group-item-action active h-100"
+                                            data-bs-toggle="list" role="button" id="select-movie"><i
+                                                class="bi bi-tv"></i> &nbsp;Select a
+                                            movie I like</a>
+                                        <a class="list-group-item list-group-item-action h-100" data-bs-toggle="list"
+                                            role="button" id="select-game"><i class="bi bi-suit-spade"></i> &nbsp;Select
+                                            a game I
+                                            like</a>
+                                    </div>
                                 </div>
                             </div>
 
+                            <div class="precision-placeholder"></div>
 
                             <div class="row search-card-row">
-                                <div class="col-2">
-                                </div>
-                                <div class="col-10">
-                                    <small class="form-text text-muted">We will recommend you games based on
-                                        books/movies/games you already enjoy.</b></small>
+                                <div class="col-12" id="movies-games-tagify-container">
+                                    <input class="search-tag-input" id="movieEnjoy" name="movieEnjoy"
+                                        placeholder="Movie">
                                 </div>
                             </div>
 
@@ -104,6 +100,8 @@
                             </div>
 
                             <button type="submit" class="btn btn-primary">Submit</button>
+
+                            <div class="precision-placeholder"></div>
 
                         </form>
                     </div>
@@ -132,6 +130,7 @@
      * 'gameTags': [String] (list of tags)
      * }
      */
+    initMoviesTagify();
     $('#search-form').submit(function (e) {
         $("#playerTypeSingle").val($('#playerTypeSingle').is(":checked"));
         $("#playerTypeMulti").val($('#playerTypeMulti').is(":checked"));
@@ -161,6 +160,18 @@
         }
     });
 
+    $("#select-game").click(function () {
+        $("#movies-games-tagify-container").html("");
+        $("#movies-games-tagify-container").html("<input class='search-tag-input' id='gameEnjoy' name='gameEnjoy' placeholder='Game'>");
+        initGamesTagify();
+    });
+
+    $("#select-movie").click(function () {
+        $("#movies-games-tagify-container").html("");
+        $("#movies-games-tagify-container").html("<input class='search-tag-input' id='movieEnjoy' name='movieEnjoy' placeholder='Movie'>");
+        initMoviesTagify();
+    });
+
     function formIncompleteAlert(custom = "") {
         alert("Please compelte the form before submitting!\n" + custom);
     }
@@ -186,63 +197,68 @@
         }
     });
 
-    let movies = JSON.parse($("#moviesData").val()).map(function (x) {
-        return { value: x[0], id: x[1] };
-    });
-    let movieInput = document.querySelector('input[id=movieEnjoy]');
-    let movieTagify = new Tagify(movieInput, {
-        mode: 'select',
-        whitelist: movies,
-        dropdown: {
-            classname: "color-blue",
-            enabled: 0,
-            highlightFirst: true,
-            maxItems: 30,
-        },
-        templates: {
-            dropdownItemNoMatch: function (data) {
-                return `
+    function initMoviesTagify() {
+        let movies = JSON.parse($("#moviesData").val()).map(function (x) {
+            return { value: x[0], id: x[1] };
+        });
+        let movieInput = document.querySelector('input[id=movieEnjoy]');
+        let movieTagify = new Tagify(movieInput, {
+            mode: 'select',
+            whitelist: movies,
+            dropdown: {
+                classname: "color-blue",
+                enabled: 0,
+                highlightFirst: true,
+                maxItems: 30,
+            },
+            templates: {
+                dropdownItemNoMatch: function (data) {
+                    return `
                     No suggestion found, please enter valid items only.
                 `
+                }
             }
-        }
-    });
-    movieTagify.on('add', onMovieAdd).on('remove', onMovieRemove);
+        });
+        movieTagify.on('add', onMovieAdd).on('remove', onMovieRemove);
+    }
+
     function onMovieAdd(e) {
         if (!e.detail.data.hasOwnProperty('id')) {
             movieTagify.removeAllTags();
         }
         else {
-            $("#gameEnjoy").prop('disabled', true);
+            $("#gameEnjoy").prop('readonly', true);
         }
     }
     function onMovieRemove(e) {
-        $("#gameEnjoy").prop('disabled', false);
-        $("#gameEnjoy").attr('placeholder', 'disabled')
+        $("#gameEnjoy").prop('readonly', false);
     }
 
-    let games = JSON.parse($("#gamesData").val()).map(function (x) {
-        return { value: x[0], id: x[1] };
-    });
-    let gameInput = document.querySelector('input[id=gameEnjoy]');
-    let gameTagify = new Tagify(gameInput, {
-        mode: 'select',
-        whitelist: games,
-        dropdown: {
-            classname: "color-blue",
-            enabled: 0,
-            highlightFirst: true,
-            maxItems: 30,
-        },
-        templates: {
-            dropdownItemNoMatch: function (data) {
-                return `
+    function initGamesTagify() {
+        let games = Object.entries(JSON.parse($("#gamesData").val())).map(function ([value, key]) {
+            return { value: value, id: key };
+        });
+        let gameInput = document.querySelector('input[id=gameEnjoy]');
+        let gameTagify = new Tagify(gameInput, {
+            mode: 'select',
+            whitelist: games,
+            dropdown: {
+                classname: "color-blue",
+                enabled: 0,
+                highlightFirst: true,
+                maxItems: 30,
+            },
+            templates: {
+                dropdownItemNoMatch: function (data) {
+                    return `
                     No suggestion found, please enter valid items only.
                 `
+                }
             }
-        }
-    });
-    gameTagify.on('add', onGameAdd).on('remove', onGameRemove);
+        });
+        gameTagify.on('add', onGameAdd).on('remove', onGameRemove);
+    }
+
     function onGameAdd(e) {
         if (!e.detail.data.hasOwnProperty('id')) {
             gameTagify.removeAllTags();
