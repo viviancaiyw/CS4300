@@ -25,6 +25,7 @@ GAME_INFO_FILENAME = 'game_info.json'
 MOVIE_INFO_FILENAME = "movie_info.json"
 GAME_INFO_FILENAME = "game_info.json"
 TOP3000_MOVIE_GAME_TITLE_SIMILARITY_FILENAME = "top3000movie_game_title_similarity.json"
+GAMES_TITLE_SIMILARITY_FILENAME = "games_title_similarity.json"
 MOVIE_NAME_FILENAME = "movie_id_to_title.json"
 
 
@@ -57,6 +58,8 @@ def init_db():
     with open(os.path.join(DATA_DIR, TOP3000_MOVIE_GAME_TITLE_SIMILARITY_FILENAME),
               "r") as in_json_file:
         movie_game_title_sim = json.load(in_json_file)
+    with open(os.path.join(DATA_DIR, GAMES_TITLE_SIMILARITY_FILENAME), 'r' ) as in_json_file:
+        game_title_sim = json.load(in_json_file)
     with open(os.path.join(DATA_DIR, MOVIE_NAME_FILENAME), "r") as in_json_file:
         movie_titles = json.load(in_json_file)
 
@@ -97,7 +100,8 @@ def init_db():
             mature_content=mature_content,
             url=str(info['url']),
             desc_keywords=json.dumps(info['desc_keywords']),
-            vector_pca=json.dumps(game_vectors[appid])
+            vector_pca=json.dumps(game_vectors[appid]),
+            games_title_match=json.dumps(game_title_sim.get(appid, []))
         ))
 
     print("Dump basis eigenvectors...")
@@ -169,6 +173,6 @@ def modify_title_similarity():
 
 if __name__ == '__main__':
     # drop_db()
-    # init_db()
+    init_db()
     # modify_db()
-    modify_title_similarity()
+    # modify_title_similarity()

@@ -20,6 +20,7 @@ def home():
                            moviesData=json.dumps(get_movie_list()),
                            gamesData=json.dumps(get_game_dict()))
 
+
 @irsystem.route('/search', methods=['GET'])
 def search():
     return redirect(url_for('irsystem.home'))
@@ -49,8 +50,10 @@ def search_action():
     response_body = {
         "based on svd": searchWrapper(
             playerSingle, playerMulti, genres, tags, movie, game, game_vectors, game_id_list),
-        "based on titles": get_top_games_from_title(
+        "based on titles": get_top_games_from_title_for_movie(
             mov_tmt_path=movie, candidate_games=metadata_candidates,
+            threshold=0.3) if movie else get_top_games_from_title_for_game(
+            app_id=game, candidate_games=metadata_candidates,
             threshold=0.3)
     }
     return render_template('result.html', data=response_body)
