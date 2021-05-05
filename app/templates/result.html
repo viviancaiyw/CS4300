@@ -7,6 +7,7 @@
         <div class="placeholder"></div>
         {% if data %}
         {% for type, games in data.items() %}
+        {% if games %}
         <div class="card">
             <div class="card-header">Results {% print(type) %}</div>
             <div class="card-body">
@@ -70,11 +71,21 @@
                                     <div class="col">
                                         <a role="button" class="text-info" data-bs-html="true" data-bs-toggle="popover"
                                             data-bs-content="
+                                                {% if type == 'based on svd' %}
+                                                <div class='row'>
+                                                    <div class='col-12'>These are the top weighted keywords in this game relevant to your search:</div>
+                                                </div>
                                                 <ul class='list-group'>
-                                                    <li class='list-group-item'>{{ game.matching_tokens }}</li>
-                                                    <li class='list-group-item'>Example Reason 2</li>
-                                                    <li class='list-group-item'>Example Reason 3</li>
+                                                    {% for token in game.matching_tokens %}
+                                                    <li class='list-group-item'>{{ token }}</li>
+                                                    {% endfor %}
                                                 </ul>
+                                                {% endif %}
+                                                {% if type == 'based on titles' %}
+                                                <ul class='list-group'>
+                                                    <li class='list-group-item'>Your input movie/book title has a matching score of {{ game.title_match_score }} with this game</li>
+                                                </ul>
+                                                {% endif %}
                                                 " data-bs-trigger="hover"><i class="bi bi-question-circle-fill"></i>
                                             &nbsp;Why is this game
                                             recommended</a>
@@ -93,6 +104,7 @@
             </div>
         </div>
         <div class="placeholder"></div>
+        {% endif %}
         {% endfor %}
         {% endif %}
     </div>
