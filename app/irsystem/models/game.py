@@ -18,11 +18,13 @@ class Game(db.Model):
     url = db.Column(db.String(255))
     desc_keywords = db.Column(db.Text)
     vector_pca = db.Column(db.Text)
+    games_title_match = db.Column(db.Text)
 
     def __init__(self, app_id: str, name: str, developer: [], publisher: [],
                  tags: [], genre: [], single_player: bool, multi_player: bool,
                  rating: int, mature_content: bool,
-                 url: str, desc_keywords: [], vector_pca: []):
+                 url: str, desc_keywords: [], vector_pca: [],
+                 games_title_match: str):
         db.Model.__init__(self,
                           app_id=app_id,
                           name=name,
@@ -36,7 +38,8 @@ class Game(db.Model):
                           mature_content=mature_content,
                           url=url,
                           desc_keywords=desc_keywords,
-                          vector_pca=vector_pca)
+                          vector_pca=vector_pca,
+                          games_title_match=games_title_match)
 
     def __repr__(self):
         return "<Game %s: %r>" % (self.app_id, self.name)
