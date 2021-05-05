@@ -132,7 +132,6 @@
      */
     initMoviesTagify();
     $('#search-form').submit(function (e) {
-        e.preventDefault();
         $("#playerTypeSingle").val($('#playerTypeSingle').is(":checked"));
         $("#playerTypeMulti").val($('#playerTypeMulti').is(":checked"));
         if ($("#playerTypeMulti").val() === "false" && $("#playerTypeSingle").val() === "false") {
