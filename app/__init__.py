@@ -16,7 +16,6 @@ from flask_login import LoginManager
 socketio = SocketIO()
 app = Flask(__name__)
 app.config.from_object(os.environ["APP_SETTINGS"])
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 # DB
 db = SQLAlchemy(app)

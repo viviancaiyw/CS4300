@@ -4,14 +4,14 @@ from app.irsystem.models.game import Game
 import numpy as np
 import json
 from nltk.corpus import wordnet as wn
-from . import raw_token_list, dict_token_to_id, basis_eigenvector, game_vectors, game_id_list, dict_gameid_to_idx
+from . import raw_token_list, dict_token_to_id, basis_eigenvector, dict_gameid_to_idx
 from .metadata_match import filter_games
 
 
-def searchWrapper(singleplayer, multiplayer, raw_genre_list, free_list, movie_id, game_vectors, game_id_list):
+def searchWrapper(singleplayer, multiplayer, raw_genre_list, free_list, movie_id, game_id, all_game_vectors, all_game_id_list):
     game_id_pool = filter_games(singleplayer, multiplayer, raw_genre_list)
-    selected_game_vectors, selected_game_id_list = selected_games(game_id_pool, game_vectors, game_id_list)
-    return ranking_by_cosine_similarity(selected_game_vectors, selected_game_id_list, free_list, movie_id)
+    selected_game_vectors, selected_game_id_list = selected_games(game_id_pool, all_game_vectors, all_game_id_list)
+    return ranking_by_cosine_similarity(selected_game_vectors, selected_game_id_list, free_list, movie_id, game_id, all_game_vectors)
 
 
 def selected_games(game_id_pool, game_vectors, game_id_list):
@@ -39,12 +39,22 @@ def return_syns(token) -> list:
 
 
 #
-def ranking_by_cosine_similarity(game_vectors, game_id_list, free_list, movie_id):
+def ranking_by_cosine_similarity(selected_game_vectors, selected_game_id_list, free_list, movie_id, game_id, all_game_vectors):
     """
     free_list is the list of free typing strs
     """
-    mvec = np.array(json.loads(Movie.query.filter_by(
+    if movie_id is not None:
+        mvec = np.array(json.loads(Movie.query.filter_by(
             link_id=movie_id).first().vector_pca))
+    else:
+        mvec = 0
+
+    if game_id is not None:
+        g_idx = dict_gameid_to_idx[game_id]
+        gvec = all_game_vectors[g_idx]
+    else:
+        gvec = 0
+
     if free_list is not None:
         qlist = [entry.lower() for entry in free_list]
         for entry in qlist:
@@ -64,16 +74,21 @@ def ranking_by_cosine_similarity(game_vectors, game_id_list, free_list, movie_id
         qvec = np.matmul(qvec, basis_eigenvector)
     else:
         qvec = 0
-    qvec += mvec
 
-    game_norms = np.linalg.norm(game_vectors, axis=1)
+    if type(mvec) == np.ndarray:
+        qvec += mvec / np.linalg.norm(mvec)
+    if type(gvec) == np.ndarray:
+        qvec += gvec / np.linalg.norm(gvec)
 
-    scores = np.dot(game_vectors, qvec) / game_norms
+    selected_game_norms = np.linalg.norm(selected_game_vectors, axis=1)
+
+    scores = np.dot(selected_game_vectors, qvec) / selected_game_norms
     rank_idx_15 = np.flip(np.argsort(scores))[:15]
-    rank_gameid = game_id_list[rank_idx_15]
+    rank_gameid = selected_game_id_list[rank_idx_15]
 
     ret_list = []
     for game_id in rank_gameid:
+        core_token_list = retrieve_keywords_score(game_id, qvec, all_game_vectors)
         gameObj = Game.query.filter_by(app_id=game_id).first()
         temp_dict = {
             'app_id': game_id,
@@ -86,7 +101,20 @@ def ranking_by_cosine_similarity(game_vectors, game_id_list, free_list, movie_id
             'multi_player': gameObj.multi_player,
             'rating': gameObj.rating,
             'mature_content': gameObj.mature_content,
+            'matching_tokens': core_token_list
         }
         ret_list.append(temp_dict)
 
     return ret_list
+
+
+def retrieve_keywords_score(game_id, qvec, all_game_vectors):
+    index = dict_gameid_to_idx[game_id]
+    game_vec = all_game_vectors[index]
+    key_index = np.flip(np.argsort(game_vec * qvec))[:50]
+    token_score = np.zeros(len(raw_token_list))
+    for idx in key_index:
+        token_score += basis_eigenvector[:, idx]
+    selected_token_idx = np.flip(np.argsort(token_score))[:10]
+    selected_token = np.array(raw_token_list)[selected_token_idx]
+    return selected_token
