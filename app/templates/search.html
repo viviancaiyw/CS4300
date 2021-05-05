@@ -132,6 +132,7 @@
      */
     initMoviesTagify();
     $('#search-form').submit(function (e) {
+        e.preventDefault();
         $("#playerTypeSingle").val($('#playerTypeSingle').is(":checked"));
         $("#playerTypeMulti").val($('#playerTypeMulti').is(":checked"));
         if ($("#playerTypeMulti").val() === "false" && $("#playerTypeSingle").val() === "false") {
@@ -152,8 +153,11 @@
         if ($("#gameGenre").val() !== "") {
             $("#gameGenre").val(JSON.stringify(JSON.parse($("#gameGenre").val()).map(x => x.value)));
         }
-        if ($("#movieEnjoy").val() !== "") {
+        if ($("#movieEnjoy").length && $("#movieEnjoy").val() !== "") {
             $("#movieEnjoy").val(JSON.parse($("#movieEnjoy").val()).map(x => x.id)[0]);
+        }
+        if ($("#gameEnjoy").length && $("#gameEnjoy").val() !== "") {
+            $("#gameEnjoy").val(JSON.parse($("#gameEnjoy").val()).map(x => x.id)[0]);
         }
         if ($("#gameTags").val() !== "") {
             $("#gameTags").val(JSON.stringify(JSON.parse($("#gameTags").val()).map(x => x.value)));
