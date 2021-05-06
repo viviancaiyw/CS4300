@@ -93,24 +93,29 @@ def ranking_by_cosine_similarity(selected_game_vectors, selected_game_id_list, f
     for game_id in rank_gameid:
         core_token_list = retrieve_keywords_score(game_id, qvec, all_game_vectors)
         gameObj = Game.query.filter_by(app_id=game_id).first()
+        tags = json.loads(gameObj.tags)
+        new_core_token_list = []
+        for word in core_token_list:
+            if word in tags:
+                new_core_token_list.append(word)
         core_token_list = set(core_token_list).intersection(set(json.loads(gameObj.tags)))
         temp_dict = {
             'app_id': game_id,
             'name': gameObj.name,
             'developer': ", ".join(json.loads(gameObj.developer)),
             'publisher': ", ".join(json.loads(gameObj.publisher)),
-            'tags': json.loads(gameObj.tags),
+            'tags': tags,
             'genre': json.loads(gameObj.genre),
             'single_player': gameObj.single_player,
             'multi_player': gameObj.multi_player,
             'rating': gameObj.rating,
             'mature_content': gameObj.mature_content,
-            'matching_tokens': core_token_list[:10],
+            'matching_tokens': new_core_token_list[:10],
             'num_matching_tokens': len(core_token_list)
         }
         ret_list.append(temp_dict)
 
-    ret_list = sorted(ret_list, key = lambda i: len(i['num_matching_tokens']), reverse=True)
+    ret_list = sorted(ret_list, key = lambda i: i['num_matching_tokens'], reverse=True)
 
     return ret_list
 
