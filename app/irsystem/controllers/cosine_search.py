@@ -94,11 +94,12 @@ def ranking_by_cosine_similarity(selected_game_vectors, selected_game_id_list, f
         core_token_list = retrieve_keywords_score(game_id, qvec, all_game_vectors)
         gameObj = Game.query.filter_by(app_id=game_id).first()
         tags = json.loads(gameObj.tags)
+        tags.extend(free_list)
         new_core_token_list = []
         for word in core_token_list:
             if word in tags:
                 new_core_token_list.append(word)
-        core_token_list = set(core_token_list).intersection(set(json.loads(gameObj.tags)))
+        core_token_list = set(core_token_list).intersection(set(tags))
         temp_dict = {
             'app_id': game_id,
             'name': gameObj.name,
