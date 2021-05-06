@@ -71,9 +71,9 @@ def ranking_by_cosine_similarity(selected_game_vectors, selected_game_id_list, f
         for term in qlist:
             if term in raw_token_list:
                 if term in free_list:
-                    qvec[dict_token_to_id[term]] += 5
+                    qvec[dict_token_to_id[term]] += 10
                 else:
-                    qvec[dict_token_to_id[term]] += 2
+                    qvec[dict_token_to_id[term]] += 4
         qvec = np.matmul(qvec, basis_eigenvector)
     else:
         qvec = 0
@@ -93,6 +93,7 @@ def ranking_by_cosine_similarity(selected_game_vectors, selected_game_id_list, f
     for game_id in rank_gameid:
         core_token_list = retrieve_keywords_score(game_id, qvec, all_game_vectors)
         gameObj = Game.query.filter_by(app_id=game_id).first()
+        core_token_list = set(core_token_list).intersection(set(json.loads(gameObj.tags)))
         temp_dict = {
             'app_id': game_id,
             'name': gameObj.name,
@@ -104,9 +105,12 @@ def ranking_by_cosine_similarity(selected_game_vectors, selected_game_id_list, f
             'multi_player': gameObj.multi_player,
             'rating': gameObj.rating,
             'mature_content': gameObj.mature_content,
-            'matching_tokens': core_token_list
+            'matching_tokens': core_token_list[:10],
+            'num_matching_tokens': len(core_token_list)
         }
         ret_list.append(temp_dict)
+
+    ret_list = sorted(ret_list, key = lambda i: len(i['num_matching_tokens']), reverse=True)
 
     return ret_list
 
@@ -118,6 +122,9 @@ def retrieve_keywords_score(game_id, qvec, all_game_vectors):
     token_score = np.zeros(len(raw_token_list))
     for idx in key_index:
         token_score += basis_eigenvector[:, idx]
-    selected_token_idx = np.flip(np.argsort(token_score))[:10]
-    selected_token = np.array(raw_token_list)[selected_token_idx]
-    return selected_token
+    # selected_token_idx = np.flip(np.argsort(token_score))[:10]
+    # selected_token = np.array(raw_token_list)[selected_token_idx]
+    svd_res_idx = np.nonzero(token_score)
+    svd_res_token = np.array(raw_token_list)[svd_res_idx]
+    # return selected_token
+    return svd_res_token
