@@ -11,7 +11,10 @@ from .metadata_match import filter_games
 def searchWrapper(singleplayer, multiplayer, raw_genre_list, free_list, movie_id, game_id, all_game_vectors, all_game_id_list):
     game_id_pool = filter_games(singleplayer, multiplayer, raw_genre_list)
     selected_game_vectors, selected_game_id_list = selected_games(game_id_pool, all_game_vectors, all_game_id_list)
-    return ranking_by_cosine_similarity(selected_game_vectors, selected_game_id_list, free_list, movie_id, game_id, all_game_vectors)
+    res = ranking_by_cosine_similarity(selected_game_vectors, selected_game_id_list, free_list, movie_id, game_id, all_game_vectors)
+    if game_id != None:
+        res = res[1:]
+    return res
 
 
 def selected_games(game_id_pool, game_vectors, game_id_list):
