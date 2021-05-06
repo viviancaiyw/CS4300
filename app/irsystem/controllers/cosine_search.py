@@ -127,9 +127,9 @@ def retrieve_keywords_score(game_id, qvec, all_game_vectors):
     token_score = np.zeros(len(raw_token_list))
     for idx in key_index:
         token_score += basis_eigenvector[:, idx]
-    # selected_token_idx = np.flip(np.argsort(token_score))[:10]
-    # selected_token = np.array(raw_token_list)[selected_token_idx]
-    svd_res_idx = np.nonzero(token_score)
-    svd_res_token = np.array(raw_token_list)[svd_res_idx]
-    # return selected_token
-    return svd_res_token
+    selected_token_idx = np.flip(np.argsort(token_score))[:50]
+    selected_token = np.array(raw_token_list)[selected_token_idx]
+    # svd_res_idx = np.nonzero(token_score)
+    # svd_res_token = np.array(raw_token_list)[svd_res_idx]
+    return selected_token
+    # return svd_res_token
