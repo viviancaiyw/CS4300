@@ -1,7 +1,10 @@
 import os
 
 os.environ["APP_SETTINGS"] = "config.DevelopmentConfig"
-os.environ["DATABASE_URL"] = "postgres://bivxusanexnbjp:12f8e000800ba66e4f98d0df4795edc962bdfd5318cbd9f19c7eaf16ef244f54@ec2-52-23-45-36.compute-1.amazonaws.com:5432/dd46p10a83f3m0"
+# v3 database
+os.environ["DATABASE_URL"] = "postgres://ddrxtxgazwxidu:1b200c6e68a289654b65d64542d36da338105c7b40a2dd335f4a42420584ecf0@ec2-52-21-153-207.compute-1.amazonaws.com:5432/d1hdtre41fscdn"
+# v2 database
+# os.environ["DATABASE_URL"] = "postgres://bivxusanexnbjp:12f8e000800ba66e4f98d0df4795edc962bdfd5318cbd9f19c7eaf16ef244f54@ec2-52-23-45-36.compute-1.amazonaws.com:5432/dd46p10a83f3m0"
 # os.environ["DATABASE_URL"] = "postgresql://changwei:w45039w45039@localhost/app_trial"
 import json
 from app.irsystem.models.eigenvector import eigenvector
